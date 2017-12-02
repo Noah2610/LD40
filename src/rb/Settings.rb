@@ -16,8 +16,9 @@ class Settings
 
 	def self.sections
 		return {
-			size: { w: 512, h: 512 },
-			count: 8
+			size:       { w: 512, h: 512 },
+			image_size: { w: 128, h: 128 },
+			count: 14
 		}
 	end
 

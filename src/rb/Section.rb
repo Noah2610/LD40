@@ -1,13 +1,13 @@
 
 class Section
-	attr_reader :biomes, :end_point_heights
+	attr_reader :x,:y, :image, :biomes, :end_point_heights
 	def initialize args = {}
 		@size = Settings.sections[:size]
 		@section_index = $section_index
 		@x = args[:x] || @section_index * @size[:w]
 		@y = args[:y] || Settings.screen[:h] - @size[:h]
-		@image = args[:data][:image]
 		@inverted = false
+		@image = args[:data][:image]
 		eval(args[:data][:config])
 
 		# for debugging
@@ -55,7 +55,7 @@ class Section
 		if (inverted?)
 			@image.draw (@x + @size[:w] - $camera.pos), @y, 10, -4,4
 		else
-			@image.draw (@x - $camera.pos),@y, 10, 4,4
+			@image.draw (@x - $camera.pos), @y, 10, 4,4
 		end
 	end
 end
