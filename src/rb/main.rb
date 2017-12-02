@@ -19,7 +19,12 @@ def load_sections directory
 		next  if (/\A\.{1,2}\z/ =~ parent)
 		png = nil
 		conf = nil
-		Dir.new("#{directory}/#{parent}").each do |file|
+		if (Dir.exists? "#{directory}/#{parent}")
+			dir = Dir.new("#{directory}/#{parent}")
+		else
+			next
+		end
+		dir.each do |file|
 			next  if (file == "." || file == "..")
 			png = "#{dir_parent.path}/#{parent}/#{file}"   if (/\A.*\.png\z/ =~ file)
 			conf = "#{dir_parent.path}/#{parent}/#{file}"  if (/\A.*\.conf\.rb\z/ =~ file)
@@ -40,6 +45,7 @@ def load_sections directory
 end
 
 $sections = load_sections $dir[:sections]
+exit
 
 
 class Game < Gosu::Window
@@ -57,9 +63,12 @@ class Game < Gosu::Window
 		self.caption = "Mother Nature"
 	end
 
-	def gen_sections sections
-		sects = sections.shuffle
-		sects.each do |section|
+	def gen_sections sects
+		ret = []
+		sections = sects.shuffle
+		sections.each do |section|
+			# TODO: Border sections
+
 		end
 	end
 
