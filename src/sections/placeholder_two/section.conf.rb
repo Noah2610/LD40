@@ -1,8 +1,8 @@
 ### placeholder_one
-@biome = :field
+@biomes = [:field]
 @border = false
 # Where buildings can spawn, center points
-@build_level = [
+@build_levels = [
 	{ x: 66, y: 80 }
 ]
 # End points of sections, for nice ground flow
