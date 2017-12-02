@@ -1,5 +1,5 @@
 ### placeholder_one
-@biomes = [:field,:forest]
+@biomes = [:forest]
 @border = false
 # Where buildings can spawn, center points
 @build_levels = [
@@ -8,6 +8,6 @@
 ]
 # End points of sections, for nice ground flow
 @end_point_heights = {
-	left:  128,
-	right: 86
+	left:  86,
+	right: 128
 }

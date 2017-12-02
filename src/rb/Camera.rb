@@ -11,7 +11,7 @@ class Camera
 		when :left
 			@pos -= @step  unless (@pos <= 0)
 		when :right
-			@pos += @step  unless (@pos >= Settings.screen[:w])
+			@pos += @step  unless (@pos >= Settings.map[:w])
 		end
 	end
 end

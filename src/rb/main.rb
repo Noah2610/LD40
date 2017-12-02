@@ -54,31 +54,60 @@ class Game < Gosu::Window
 	end
 
 	def gen_sections sects
+		puts "Generating map, this might take a moment (will stop generating after 5 seconds)"
 		ret = []
 		sections = sects.shuffle
-		sections.each_with_index do |section_data,index|
-			break  if (ret.size >= Settings.sections[:count])
+		prev_section = nil
+		gen_start = Time.now
+		gen_timeout = 5
 
-			if (index == 0 || Settings.sections[:count] - 1 == ret.size)
-				found_border = false
-				sections.each do |section_data_border|
-					section_border = Section.new data: section_data_border
-					if (section_border.is_border?)
-						found_border = true
-						section_border.invert!  if (Settings.sections[:count] - 1 == ret.size)
-						ret << section_border
-						$section_index += 1
-						break
-					end
-				end
-				next  if found_border
+		# Add first border (left)
+		sections.each do |section_data|
+			if (Time.now > gen_start + gen_timeout)
+				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
+				break
 			end
-
 			section = Section.new data: section_data
-			next  if (section.is_border?)
-			ret << section
-			$section_index += 1
+			if (section.is_border?)
+				ret << section
+				prev_section = section
+				$section_index += 1
+				break
+			end
+		end
 
+		# Add middle sections
+		#sections.each_with_index do |section_data,index|
+		section_counter = 0
+		while (ret.size < Settings.sections[:count] - 1)
+			if (Time.now > gen_start + gen_timeout)
+				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
+				break
+			end
+			#break  if (ret.size >= Settings.sections[:count] - 1)
+			section = Section.new data: sections[section_counter]
+			if (!section.is_border? && (prev_section.nil? || prev_section.can_have_neighbor?(section)))
+				ret << section
+				prev_section = section
+				$section_index += 1
+			end
+			section_counter += 1
+			section_counter = 0  if (section_counter >= sections.size)
+		end
+
+		# Add second border (right)
+		sections.each do |section_data|
+			if (Time.now > gen_start + gen_timeout)
+				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
+				break
+			end
+			section = Section.new data: section_data
+			if (section.is_border? && (prev_section.nil? || prev_section.can_have_neighbor?(section)))
+				ret << section
+				section.invert!
+				$section_index += 1
+				break
+			end
 		end
 
 		return ret
@@ -86,6 +115,10 @@ class Game < Gosu::Window
 
 	def button_down id
 		close  if (id == Gosu::KB_Q)
+	end
+
+	def needs_cursor?
+		true
 	end
 
 	def update

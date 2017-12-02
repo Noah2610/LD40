@@ -1,5 +1,5 @@
-### mountain_border
-@biome = [:field]
+### field_one
+@biomes = [:field]
 @border = false
 # Where buildings can spawn, center points
 @build_levels = [

@@ -2,14 +2,14 @@
 class Settings
 	def self.screen
 		return {
-			w: 860,
+			w: 1200,
 			h: 640
 		}
 	end
 
 	def self.map
 		return {
-			w: 4000,
+			w: 8000,
 			h: self.screen[:h]
 		}
 	end
@@ -17,7 +17,7 @@ class Settings
 	def self.sections
 		return {
 			size: { w: 512, h: 512 },
-			count: 3
+			count: 8
 		}
 	end
 
