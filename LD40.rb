@@ -1,20 +1,18 @@
 #!/bin/env ruby
 
-dir = {
+$dir = {
 	src:      "./src",
 	rb:       "./src/rb",
 	samples:  "./src/samples",
-	textures: "./src/textures",
+	sections: "./src/sections"
 }
 
-$screen = {
-	w: 640,
-	h: 520
-}
-
-require "gosu"
-require "#{dir[:rb]}/main"
-require "#{dir[:rb]}/section"
+require 'gosu'
+require 'awesome_print'
+require 'byebug'
+require "#{$dir[:rb]}/Settings"
+require "#{$dir[:rb]}/main"
+require "#{$dir[:rb]}/Section"
 
 $game = Game.new
 $game.show
