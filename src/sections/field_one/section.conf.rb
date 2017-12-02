@@ -1,9 +1,13 @@
+### placeholder_one
 @biome = :field
+@border = false
+# Where buildings can spawn, center points
 @build_level = [
-	{ x: 128, y: 128 },
-	{ x: 64,  y: 64 }
+	{ x: 35, y: 97 },
+	{ x: 100,  y: 95 }
 ]
+# End points of sections, for nice ground flow
 @end_point_heights = {
-	left:  512,
-	right: 128
+	left:  128,
+	right: 86
 }

@@ -1,5 +1,6 @@
 ### placeholder_one
 @biome = :field
+@border = false
 # Where buildings can spawn, center points
 @build_level = [
 	{ x: 66, y: 80 }
