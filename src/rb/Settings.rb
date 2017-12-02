@@ -17,7 +17,7 @@ class Settings
 	def self.sections
 		return {
 			size: { w: 512, h: 512 },
-			count: 2
+			count: 3
 		}
 	end
 

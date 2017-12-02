@@ -20,7 +20,6 @@ def load_sections directory
 			conf = "#{dir_parent.path}/#{parent}/#{file}"  if (/\A.*\.conf\.rb\z/ =~ file)
 		end
 
-		puts parent, "png: " + png, "conf: " + conf
 		# add section data if .png and .conf.rb are present
 		if (File.exists?(png) && File.exists?(conf))
 			ret << {
@@ -44,6 +43,8 @@ class Game < Gosu::Window
 		#	Section.new(data: $sections[1])
 		#]
 
+		$camera = Camera.new
+
 		@sections = gen_sections $sections
 
 		@bg_color = Gosu::Color.argb 0xff_ffffff
@@ -57,15 +58,14 @@ class Game < Gosu::Window
 		sections = sects.shuffle
 		sections.each_with_index do |section_data,index|
 			break  if (ret.size >= Settings.sections[:count])
-			section = Section.new data: section_data
-			# TODO: Border sections
 
-			if (index == 0 || index == sections.size - 1)
+			if (index == 0 || Settings.sections[:count] - 1 == ret.size)
 				found_border = false
 				sections.each do |section_data_border|
 					section_border = Section.new data: section_data_border
 					if (section_border.is_border?)
 						found_border = true
+						section_border.invert!  if (Settings.sections[:count] - 1 == ret.size)
 						ret << section_border
 						$section_index += 1
 						break
@@ -74,6 +74,8 @@ class Game < Gosu::Window
 				next  if found_border
 			end
 
+			section = Section.new data: section_data
+			next  if (section.is_border?)
 			ret << section
 			$section_index += 1
 
@@ -87,6 +89,8 @@ class Game < Gosu::Window
 	end
 
 	def update
+		$camera.move :left   if (Controls.left?)
+		$camera.move :right  if (Controls.right?)
 	end
 
 	def draw

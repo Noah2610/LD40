@@ -7,27 +7,27 @@ class Section
 		@x = args[:x] || @section_index * @size[:w]
 		@y = args[:y] || Settings.screen[:h] - @size[:h]
 		@image = args[:data][:image]
+		@inverted = false
 		eval(args[:data][:config])
 	end
 
 	def is_border?
-		return !!@border
-	end
-
-	def border_side
 		return @border
 	end
 
 	def inverted?
-		return true   if (@border == :right)
-		return false  if (@border == :left || @border == false)
+		return @inverted
+	end
+
+	def invert!
+		@inverted = true
 	end
 
 	def draw
 		if (inverted?)
-			@image.draw (@x + @size[:w]), @y, 10, -4,4
+			@image.draw (@x + @size[:w] - $camera.pos), @y, 10, -4,4
 		else
-			@image.draw @x,@y, 10, 4,4
+			@image.draw (@x - $camera.pos),@y, 10, 4,4
 		end
 	end
 end

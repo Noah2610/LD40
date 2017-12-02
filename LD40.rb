@@ -11,9 +11,12 @@ require 'gosu'
 require 'awesome_print'
 require 'byebug'
 require "#{DIR[:rb]}/Settings"
-require "#{DIR[:rb]}/main"
 require "#{DIR[:rb]}/Section"
+require "#{DIR[:rb]}/Camera"
+require "#{DIR[:rb]}/Controls"
+require "#{DIR[:rb]}/main"
 
+$camera = nil
 $game = Game.new
 $game.show
 
