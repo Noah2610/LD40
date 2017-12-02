@@ -1,4 +1,4 @@
-### placeholder_one
+### mountain_border
 @biome = [:field]
 @border = false
 # Where buildings can spawn, center points

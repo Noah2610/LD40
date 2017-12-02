@@ -1,6 +1,6 @@
 ### placeholder_one
 @biomes = [:field]
-@border = :left
+@border = true
 # Where buildings can spawn, center points
 @build_levels = []
 # End points of sections, for nice ground flow
