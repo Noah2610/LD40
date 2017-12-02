@@ -1,15 +1,5 @@
 
-$screen = {
-	w: 860,
-	h: 640
-}
-
-#$images = {
-#	sections: {
-#		placeholder: "#{$dir[:images]}/section_placeholder.png"
-#	}
-#}
-
+$section_index = 0
 
 def load_sections directory
 	ret = []
@@ -44,32 +34,52 @@ def load_sections directory
 	return ret
 end
 
-$sections = load_sections $dir[:sections]
-exit
+$sections = load_sections DIR[:sections]
 
 
 class Game < Gosu::Window
 	def initialize
 		#@sections = [
-		#	Section.new(data: $sections[:placeholder_one], index: 0),
-		#	Section.new(data: $sections[:placeholder_two], index: 1)
+		#	Section.new(data: $sections[0]),
+		#	Section.new(data: $sections[1])
 		#]
 
 		@sections = gen_sections $sections
 
 		@bg_color = Gosu::Color.argb 0xff_ffffff
 
-		super $screen[:w], $screen[:h]
+		super Settings.screen[:w], Settings.screen[:h]
 		self.caption = "Mother Nature"
 	end
 
 	def gen_sections sects
 		ret = []
 		sections = sects.shuffle
-		sections.each do |section|
+		sections.each_with_index do |section_data,index|
+			break  if (ret.size >= Settings.sections[:count])
+			section = Section.new data: section_data
 			# TODO: Border sections
 
+			if (index == 0 || index == sections.size - 1)
+				found_border = false
+				sections.each do |section_data_border|
+					section_border = Section.new data: section_data_border
+					if (section_border.is_border?)
+						found_border = true
+						ret << section_border
+						$section_index += 1
+						break
+					end
+				end
+				next  if found_border
+			end
+
+			ret << section
+			$section_index += 1
+
 		end
+
+		return ret
 	end
 
 	def button_down id
@@ -81,7 +91,7 @@ class Game < Gosu::Window
 
 	def draw
 		# Draw background
-		Gosu.draw_rect 0,0, $screen[:w],$screen[:h], @bg_color
+		Gosu.draw_rect 0,0, Settings.map[:w],Settings.map[:h], @bg_color
 
 		# Draw Sections
 		@sections.each &:draw

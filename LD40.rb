@@ -1,6 +1,6 @@
 #!/bin/env ruby
 
-$dir = {
+DIR = {
 	src:      "./src",
 	rb:       "./src/rb",
 	samples:  "./src/samples",
@@ -10,9 +10,9 @@ $dir = {
 require 'gosu'
 require 'awesome_print'
 require 'byebug'
-require "#{$dir[:rb]}/Settings"
-require "#{$dir[:rb]}/main"
-require "#{$dir[:rb]}/Section"
+require "#{DIR[:rb]}/Settings"
+require "#{DIR[:rb]}/main"
+require "#{DIR[:rb]}/Section"
 
 $game = Game.new
 $game.show
