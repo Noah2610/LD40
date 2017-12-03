@@ -18,6 +18,7 @@ require "#{DIR[:rb]}/Controls"
 require "#{DIR[:rb]}/MiniMap"
 require "#{DIR[:rb]}/Person"
 require "#{DIR[:rb]}/Group"
+require "#{DIR[:rb]}/Base"
 require "#{DIR[:rb]}/main"
 
 $camera = nil

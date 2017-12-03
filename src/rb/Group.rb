@@ -5,9 +5,23 @@ class Group
 		@group_id = $group_ids
 		$group_ids += 1
 		@leader = nil
+		@base = nil
 		if (!args[:people].nil? && args[:people].class == Array)
 			add_people args[:people]
 		end
+	end
+
+	def base
+		return nil  unless (has_base?)
+		return @base
+	end
+
+	def has_base?
+		return !!@base
+	end
+
+	def add_base base
+		@base = base
 	end
 
 	def get_people

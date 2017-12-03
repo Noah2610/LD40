@@ -72,6 +72,24 @@ class Person
 		end
 	end
 
+	def find_base
+		distance = group.base.x - @x
+		@direction[:x] = distance.sign  unless (distance.nil?)
+	end
+
+	def init_base
+		current_section = Section.find x: @x
+		ids = []
+		ids << current_section.id - 1  if (Section.exists?(current_section.id - 1, border: false, only_base: group.base))
+		ids << current_section.id      if (Section.exists?(current_section.id, border: false, only_base: group.base))
+		ids << current_section.id + 1  if (Section.exists?(current_section.id + 1, border: false, only_base: group.base))
+		sections = Section.get_by_ids ids
+		if (sections.any?)
+			section = sections.sample
+			$game.new_base group: group, section: section
+		end
+	end
+
 	def move
 		# Turn around if person is on border_section
 		if (((Section.find(borders: true).map { |s| s.is_inside? x: @x }).include? true) && !@pivoted)
@@ -93,6 +111,15 @@ class Person
 			end
 			find_next_path_point
 		end
+
+		if (is_leader?)
+			if (!group.has_base? && group.get_people.size == Settings.evolution[:init_base_at])
+				init_base
+			elsif (group.has_base?)
+				find_base
+			end
+		end
+
 		move                if (@update_counter % Settings.people[:move][:interval] == 0)
 		@wobble_step *= -1  if (@update_counter % Settings.people[:move][:wobble][:interval] == 0)
 
@@ -101,12 +128,14 @@ class Person
 
 	def draw
 		# DEVELOPMENT
+=begin
 		if (is_leader?)
 			@font.draw "LEADER", (@x - $camera.pos), @y - 150, 500, 1,1, Gosu::Color.argb(0xff_ff0000)
 		end
 		unless (group.nil?)
 			@font.draw group.group_id.to_s, (@x - $camera.pos), @y - 100, 500, 1,1, Gosu::Color.argb(0xff_ff0000)
 		end
+=end
 
 
 		@image.draw (@x - $camera.pos), (@y + @wobble_step), 200, 4,4

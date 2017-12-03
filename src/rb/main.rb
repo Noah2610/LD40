@@ -52,7 +52,7 @@ $sections = load_sections DIR[:sections]
 
 
 class Game < Gosu::Window
-	attr_reader :sections, :people, :groups
+	attr_reader :sections, :people, :groups, :bases
 	def initialize
 		#@sections = [
 		#	Section.new(data: $sections[0]),
@@ -69,8 +69,11 @@ class Game < Gosu::Window
 		@year_last_time = Time.now
 		@year_font = Gosu::Font.new 32
 
+		@people_font = Gosu::Font.new 32
+
 		@people = []
 		@groups = []
+		@bases = []
 
 		@bg_color = Gosu::Color.argb 0xff_ffffff
 
@@ -194,6 +197,12 @@ class Game < Gosu::Window
 		handle_new_person
 	end
 
+	def new_base args
+		build_level_index = rand(args[:section].build_levels.size)
+		@bases << Base.new(group: args[:group], section: args[:section], build_level_index: build_level_index)
+		args[:group].add_base @bases.last
+	end
+
 	def button_down id
 		close  if (id == Gosu::KB_Q)
 		puts "#{{ x: mouse_x, y: mouse_y }}"  if (id == Gosu::MS_LEFT)
@@ -229,6 +238,11 @@ class Game < Gosu::Window
 	end
 
 	def draw
+		# DEVELOPMENT
+		# fps
+		@year_font.draw "#{Gosu.fps}", 128,128, 400, 1,1, Gosu::Color.argb(0xff_000000)
+
+
 		# Draw background
 		Gosu.draw_rect 0,0, Settings.map[:w],Settings.map[:h], @bg_color, 0
 
@@ -243,8 +257,16 @@ class Game < Gosu::Window
 		@year_font.draw "Year", year_pos[:x], year_pos[:y] - 32, 300, 1,1, Settings.year[:display][:color]
 		@year_font.draw "#{@year}".rjust(4,"0"), year_pos[:x],year_pos[:y], 300, 1,1, Settings.year[:display][:color]
 
+		# Draw people count
+		people_pos = Settings.people[:display][:pos]
+		@people_font.draw "People", people_pos[:x], people_pos[:y] - 32, 300, 1,1, Settings.people[:display][:color]
+		@people_font.draw "#{@people.size}", people_pos[:x],people_pos[:y], 300, 1,1, Settings.people[:display][:color]
+
 		# Draw people
 		@people.each &:draw
+
+		# Draw bases
+		@bases.each &:draw
 	end
 end
 

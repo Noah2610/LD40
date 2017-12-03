@@ -42,17 +42,24 @@ class Settings
 			initial_spawns_at: [50, 250,300,600,650],
 			#initial_spawns_at: [50, 100],
 			move: {
-				interval:      10,
-				find_interval: 50,
+				interval:      30,
+				find_interval: 100,
 				min_distance:  2048,
 				step: {
-					x: 4,
-					y: 1
+					x: 8,
+					y: 2
 				},
 				wobble: {
 					step:     2,
-					interval: 10
+					interval: 30
 				}
+			},
+			display: {
+				pos: {
+					x: (self.screen[:w] - 128),
+					y: 192,
+				},
+				color: Gosu::Color.argb(0xcc_0000ff)
 			}
 		}
 	end
@@ -63,13 +70,13 @@ class Settings
 			baby_interval:   50,
 			baby_chance:     (1.0 / 10.0),
 			baby_distance:   64,
-			group_distance:  128
+			group_distance:  128,
+			init_base_at:    4   # people
 		}
 	end
 
 	def self.builds
 		return {
-			first_build:    4,  # people
 
 		}
 	end

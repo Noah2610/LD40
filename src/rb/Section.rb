@@ -1,6 +1,6 @@
 
 class Section
-	attr_reader :x,:y, :image, :biomes, :end_point_heights
+	attr_reader :x,:y, :image, :biomes, :end_point_heights, :build_levels
 	def initialize args = {}
 		@size = Settings.sections[:size]
 		@section_index = $section_index
@@ -21,6 +21,32 @@ class Section
 		@debug_info = [ @biomes, @end_point_heights ]
 	end
 
+	def self.exists? id, opts
+		section = self.get_by_ids([id])[0]
+		case opts[:border]
+		when nil
+			ret = !!section
+		when false
+			if (!!section)
+				ret = !section.is_border?
+			end
+		when true
+			if (!!section)
+				ret = section.is_border?
+			end
+		end
+
+		if (ret)
+			if (opts[:only_base])
+				bases.each do |b|
+					ret = false  if (b != opts[:only_base])
+				end
+			end
+		end
+
+		return ret
+	end
+
 	def self.find args
 		ret = nil
 		unless (args[:border] || args[:borders])
@@ -36,6 +62,30 @@ class Section
 				if (section.is_border?)
 					ret << section
 				end
+			end
+		end
+		return ret
+	end
+
+	def self.get_by_ids ids
+		ret = []
+		$game.sections.each do |section|
+			if (ids.include? section.id)
+				ret << section
+			end
+		end
+		return ret
+	end
+
+	def id
+		return @section_index
+	end
+
+	def bases
+		ret = []
+		$game.bases.each do |b|
+			if (b.section == self)
+				ret << b
 			end
 		end
 		return ret
@@ -122,6 +172,7 @@ class Section
 	def draw
 		# DEVELOPMENT
 		# debug text
+=begin
 		@font.draw_rel @debug_info.to_s, ((@x - $camera.pos) + @size[:w] / 2), 32, 100, 0.5,0.5, 1,1, Gosu::Color.argb(0xff_000000)
 		# build level points
 		@build_levels.each do |point|
@@ -134,6 +185,7 @@ class Section
 		# end_points
 		Gosu.draw_rect (@x - $camera.pos), (@end_point_heights[:left]), 8,8, Gosu::Color.argb(0xff_00ff00), 500
 		Gosu.draw_rect (@x + @size[:w] - $camera.pos), (@end_point_heights[:right]), 8,8, Gosu::Color.argb(0xff_00ff00), 500
+=end
 
 
 		scale = Settings.sections[:size][:w].to_f / Settings.sections[:image_size][:w].to_f
