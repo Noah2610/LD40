@@ -18,7 +18,7 @@ class Settings
 		return {
 			size:       { w: 512, h: 512 },
 			image_size: { w: 128, h: 128 },
-			count: 14
+			count: 8
 		}
 	end
 
@@ -42,11 +42,11 @@ class Settings
 			initial_spawns_at: [50, 250,300,600,650],
 			move: {
 				interval:      10,
-				find_interval: 200,
+				find_interval: 50,
 				min_distance:  2048,
 				step: {
-					x: 4,
-					y: 4
+					x: 16,
+					y: 16
 				}
 			},
 		}

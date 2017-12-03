@@ -20,6 +20,26 @@ class Section
 		@debug_info = [ @biomes, @end_point_heights ]
 	end
 
+	def self.find args
+		ret = nil
+		unless (args[:border] || args[:borders])
+			$game.sections.each do |section|
+				if (section.is_inside? x: args[:x])
+					ret = section
+					break
+				end
+			end
+		else
+			ret = []
+			$game.sections.each do |section|
+				if (section.is_border?)
+					ret << section
+				end
+			end
+		end
+		return ret
+	end
+
 	def is_inside? pos
 		return (pos[:x] >= @x &&
 						pos[:x] < @x + @size[:w])
