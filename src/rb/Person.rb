@@ -11,6 +11,7 @@ class Person
 			{ x: 1, y: 0 }
 		].sample
 		@pivoted = false
+		@wobble_step = Settings.people[:move][:wobble][:step] * [1,-1].sample
 	end
 
 	def find_closest_person
@@ -60,12 +61,13 @@ class Person
 			find_closest_person
 			find_next_path_point
 		end
-		move                 if (@update_counter % Settings.people[:move][:interval] == 0)
+		move                if (@update_counter % Settings.people[:move][:interval] == 0)
+		@wobble_step *= -1  if (@update_counter % Settings.people[:move][:wobble][:interval] == 0)
 		@update_counter += 1
 	end
 
 	def draw
-		@image.draw (@x - $camera.pos),@y, 200, 4,4
+		@image.draw (@x - $camera.pos), (@y + @wobble_step), 200, 4,4
 	end
 end
 

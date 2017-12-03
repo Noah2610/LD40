@@ -45,8 +45,12 @@ class Settings
 				find_interval: 50,
 				min_distance:  2048,
 				step: {
-					x: 16,
-					y: 16
+					x: 4,
+					y: 1
+				},
+				wobble: {
+					step:     2,
+					interval: 10
 				}
 			},
 		}
