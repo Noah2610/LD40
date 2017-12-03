@@ -7,6 +7,7 @@ class Section
 		@x = args[:x] || @section_index * @size[:w]
 		@y = args[:y] || Settings.screen[:h] - @size[:h]
 		@inverted = false
+		@builds = []
 		@image = args[:data][:image]
 		eval(args[:data][:config])
 

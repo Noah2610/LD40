@@ -14,27 +14,30 @@ class Person
 		@wobble_step = Settings.people[:move][:wobble][:step] * [1,-1].sample
 	end
 
-	def find_closest_person
-		# "Pathfind" to closest person
-		distance = nil #Settings.people[:move][:min_distance]
-		#dir_y = nil
+	def get_closest_person
+		closest = nil
+		distance = nil
 		$game.people.each do |person|
 			next  if person == self
 			dist = person.x - @x
 			if (distance.nil? || dist.abs < distance.abs)
 				distance = dist
-				#dir_y = (person.y - @y).sign
+				closest = person
 			end
 		end
+		return { person: closest, distance: distance }
+	end
 
-		unless (distance.nil?)
-			@direction[:x] = distance.sign
-			#@direction[:y] = dir_y  unless dir_y.nil?
+	def find_closest_person
+		# "Pathfind" to closest person
+		distance = nil #Settings.people[:move][:min_distance]
+		closest = get_closest_person
+
+		unless (closest[:distance].nil?)
+			@direction[:x] = closest[:distance].sign
 		end
 	end
 
-	### TODO:
-	### Don't use build_levels for person paths, use seperate more points (in section config)
 	def find_next_path_point
 		current_section = Section.find x: @x
 
@@ -63,6 +66,7 @@ class Person
 		end
 		move                if (@update_counter % Settings.people[:move][:interval] == 0)
 		@wobble_step *= -1  if (@update_counter % Settings.people[:move][:wobble][:interval] == 0)
+
 		@update_counter += 1
 	end
 

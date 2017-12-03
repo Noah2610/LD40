@@ -72,6 +72,8 @@ class Game < Gosu::Window
 
 		@bg_color = Gosu::Color.argb 0xff_ffffff
 
+		@update_counter = 0
+
 		super Settings.screen[:w], Settings.screen[:h]
 		self.caption = "Mother Nature"
 	end
@@ -141,6 +143,28 @@ class Game < Gosu::Window
 		return @sections.size * Settings.sections[:size][:w]
 	end
 
+	def handle_new_person
+		return  if (@people.size < 2)
+		groups = []
+		@people.each do |person|
+			closest = person.get_closest_person
+			if (closest[:distance].abs <= Settings.evolution[:baby_distance])
+				unless (groups.map { |g| (g.include?(person) || g.include?(closest[:person]) ? true : false) }.include? true)
+					groups << [person, closest[:person]]
+				end
+			end
+		end
+
+		groups.each do |group|
+			chance = Settings.evolution[:baby_chance] * 100.0
+			if (rand(0 .. 100) < chance)
+				p = group.sample
+				@people << Person.new(x: p.x, y: p.y)
+			end
+		end
+
+	end
+
 	def button_down id
 		close  if (id == Gosu::KB_Q)
 		puts "#{{ x: mouse_x, y: mouse_y }}"  if (id == Gosu::MS_LEFT)
@@ -160,12 +184,16 @@ class Game < Gosu::Window
 		if (Time.now >= @year_last_time + Settings.year[:delay])
 			@year += Settings.year[:step]
 			@year_last_time = Time.now
-			#@people << Person.new  if (Settings.people[:initial_spawns_at].include? @year)
+			@people << Person.new  if (Settings.people[:initial_spawns_at].include? @year)
 			#@people << Person.new   if (@year % 200 == 0)
-			@people << Person.new   if (@people.empty?)
+			#@people << Person.new   if (@people.empty?)
 		end
+		# New person
+		handle_new_person        if (@update_counter % Settings.evolution[:baby_interval] == 0)
 		# Update people
 		@people.each &:update
+
+		@update_counter += 1
 	end
 
 	def draw
