@@ -1,5 +1,6 @@
 
 $section_index = 0
+$group_ids = 0
 
 class ::Integer
 	def sign
@@ -51,7 +52,7 @@ $sections = load_sections DIR[:sections]
 
 
 class Game < Gosu::Window
-	attr_reader :sections, :people
+	attr_reader :sections, :people, :groups
 	def initialize
 		#@sections = [
 		#	Section.new(data: $sections[0]),
@@ -69,6 +70,7 @@ class Game < Gosu::Window
 		@year_font = Gosu::Font.new 32
 
 		@people = []
+		@groups = []
 
 		@bg_color = Gosu::Color.argb 0xff_ffffff
 
@@ -143,26 +145,53 @@ class Game < Gosu::Window
 		return @sections.size * Settings.sections[:size][:w]
 	end
 
-	def handle_new_person
-		return  if (@people.size < 2)
+	def get_people_groups args
+		return []  if (@people.size < 2)
+		distance = args[:distance]
 		groups = []
 		@people.each do |person|
 			closest = person.get_closest_person
-			if (closest[:distance].abs <= Settings.evolution[:baby_distance])
+			next  if (closest.nil? || closest[:person].nil? || closest[:distance].nil?)
+			if (closest[:distance].abs <= distance)
 				unless (groups.map { |g| (g.include?(person) || g.include?(closest[:person]) ? true : false) }.include? true)
 					groups << [person, closest[:person]]
 				end
 			end
 		end
+		return groups
+	end
+
+	def handle_new_person
+		groups = get_people_groups distance: Settings.evolution[:baby_distance]
 
 		groups.each do |group|
 			chance = Settings.evolution[:baby_chance] * 100.0
-			if (rand(0 .. 100) < chance)
+			if (group[0].group == group[1].group && rand(0 .. 100) < chance)
+				if (group[0].group.nil?)
+					new_group = Group.new
+					new_group.add_people group[0], group[1]
+				end
 				p = group.sample
 				@people << Person.new(x: p.x, y: p.y)
 			end
 		end
 
+	end
+
+	def handle_people
+		groups = get_people_groups distance: Settings.evolution[:group_distance]
+		groups.each do |group|
+			# Add people to group
+			if (group[0].group.nil? && group[1].group.nil?)
+				@groups << Group.new(people: [group[0], group[1]])
+			elsif (!group[0].group.nil? && group[1].group.nil?)
+				group[0].group.add_person group[1]
+			elsif (group[0].group.nil? && !group[1].group.nil?)
+				group[1].group.add_person group[0]
+			end
+		end
+
+		handle_new_person
 	end
 
 	def button_down id
@@ -184,12 +213,15 @@ class Game < Gosu::Window
 		if (Time.now >= @year_last_time + Settings.year[:delay])
 			@year += Settings.year[:step]
 			@year_last_time = Time.now
-			@people << Person.new  if (Settings.people[:initial_spawns_at].include? @year)
-			#@people << Person.new   if (@year % 200 == 0)
+			#@people << Person.new  if (Settings.people[:initial_spawns_at].include? @year)
+			@people << Person.new   if (@year % 200 == 0)
 			#@people << Person.new   if (@people.empty?)
 		end
+
 		# New person
-		handle_new_person        if (@update_counter % Settings.evolution[:baby_interval] == 0)
+		handle_people            if (@update_counter % Settings.evolution[:handle_interval] == 0)
+		#handle_new_person
+
 		# Update people
 		@people.each &:update
 

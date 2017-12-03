@@ -39,8 +39,8 @@ class Settings
 
 	def self.people
 		return {
-			#initial_spawns_at: [50, 250,300,600,650],
-			initial_spawns_at: [50, 100],
+			initial_spawns_at: [50, 250,300,600,650],
+			#initial_spawns_at: [50, 100],
 			move: {
 				interval:      10,
 				find_interval: 50,
@@ -59,14 +59,17 @@ class Settings
 
 	def self.evolution
 		return {
-			baby_interval:  50,
-			baby_chance:    (1.0 / 10.0),
-			baby_distance:  64
+			handle_interval: 50,
+			baby_interval:   50,
+			baby_chance:     (1.0 / 10.0),
+			baby_distance:   64,
+			group_distance:  128
 		}
 	end
 
 	def self.builds
 		return {
+			first_build:    4,  # people
 
 		}
 	end

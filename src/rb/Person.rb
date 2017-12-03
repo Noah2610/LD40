@@ -1,6 +1,7 @@
 
 class Person
 	attr_reader :x,:y
+	attr_accessor :group_id
 	def initialize args = {}
 		@image = Gosu::Image.new "#{DIR[:people]}/placeholder.png", retro: true
 		@x = args[:x] || rand(Settings.sections[:size][:w] .. ($game.get_map_width - Settings.sections[:size][:w]))
@@ -12,13 +13,31 @@ class Person
 		].sample
 		@pivoted = false
 		@wobble_step = Settings.people[:move][:wobble][:step] * [1,-1].sample
+		@group_id = nil
+
+		# debugging
+		@font = Gosu::Font.new 16
+	end
+
+	def group
+		$game.groups.each do |group|
+			if (group.has_person? self)
+				return group
+			end
+		end
+		return nil
+	end
+
+	def is_leader?
+		return nil  if (group.nil?)
+		return group.leader == self
 	end
 
 	def get_closest_person
 		closest = nil
 		distance = nil
 		$game.people.each do |person|
-			next  if person == self
+			next  if (person == self)
 			dist = person.x - @x
 			if (distance.nil? || dist.abs < distance.abs)
 				distance = dist
@@ -30,11 +49,17 @@ class Person
 
 	def find_closest_person
 		# "Pathfind" to closest person
-		distance = nil #Settings.people[:move][:min_distance]
+		#distance = nil #Settings.people[:move][:min_distance]
 		closest = get_closest_person
+		@direction[:x] = closest[:distance].sign  unless (closest[:distance].nil?)
+	end
 
-		unless (closest[:distance].nil?)
-			@direction[:x] = closest[:distance].sign
+	def find_group_leader
+		return  if (group.nil? || group.leader == self)
+		# "Pathfind" to group leader
+		unless (group.leader.nil?)
+			distance = group.leader.x - @x
+			@direction[:x] = distance.sign  unless distance.nil?
 		end
 	end
 
@@ -61,7 +86,11 @@ class Person
 
 	def update
 		if (@update_counter % Settings.people[:move][:find_interval] == 0)
-			find_closest_person
+			if (group.nil?)
+				find_closest_person
+			elsif (!group.nil?)
+				find_group_leader
+			end
 			find_next_path_point
 		end
 		move                if (@update_counter % Settings.people[:move][:interval] == 0)
@@ -71,6 +100,15 @@ class Person
 	end
 
 	def draw
+		# DEVELOPMENT
+		if (is_leader?)
+			@font.draw "LEADER", (@x - $camera.pos), @y - 150, 500, 1,1, Gosu::Color.argb(0xff_ff0000)
+		end
+		unless (group.nil?)
+			@font.draw group.group_id.to_s, (@x - $camera.pos), @y - 100, 500, 1,1, Gosu::Color.argb(0xff_ff0000)
+		end
+
+
 		@image.draw (@x - $camera.pos), (@y + @wobble_step), 200, 4,4
 	end
 end
