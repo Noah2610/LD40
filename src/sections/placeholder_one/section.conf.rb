@@ -11,3 +11,7 @@
 	left:  128,
 	right: 86
 }
+# Points for people pathing
+@people_path_points = [
+	{ x: 64, y: 64 }
+]

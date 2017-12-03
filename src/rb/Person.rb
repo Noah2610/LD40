@@ -15,25 +15,25 @@ class Person
 	def find_closest_person
 		# "Pathfind" to closest person
 		distance = Settings.people[:move][:min_distance]
-		dir_y = nil
+		#dir_y = nil
 		$game.people.each do |person|
 			next  if person == self
 			dist = person.x - @x
 			if (dist.abs < distance.abs)
 				distance = dist
-				dir_y = (person.y - @y).sign
+				#dir_y = (person.y - @y).sign
 			end
 		end
 
 		unless (distance.nil?)
 			@direction[:x] = distance.sign
-			@direction[:y] = dir_y  unless dir_y.nil?
+			#@direction[:y] = dir_y  unless dir_y.nil?
 		end
 	end
 
 	### TODO:
 	### Don't use build_levels for person paths, use seperate more points (in section config)
-	def find_next_build_level
+	def find_next_path_point
 		current_section = nil
 		$game.sections.each do |section|
 			if (section.is_inside? x: @x)
@@ -43,7 +43,7 @@ class Person
 		end
 
 		unless (current_section.nil?)
-			next_point = current_section.get_closest_build_level x: @x, y: @y, dir: @direction[:x]
+			next_point = current_section.get_closest_path_point x: @x, y: @y, dir: @direction[:x]
 			@direction[:y] = (next_point[:y] - @y).sign  unless (next_point.nil?)
 		end
 	end
@@ -56,7 +56,7 @@ class Person
 	def update
 		if (@update_counter % Settings.people[:move][:find_interval] == 0)
 			find_closest_person
-			find_next_build_level
+			find_next_path_point
 		end
 		move                 if (@update_counter % Settings.people[:move][:interval] == 0)
 		@update_counter += 1

@@ -82,11 +82,12 @@ class Game < Gosu::Window
 		sections = sects.shuffle
 		prev_section = nil
 		gen_start = Time.now
-		gen_timeout = 5
+		#gen_timeout = 5
+		gen_timeout = nil
 
 		# Add first border (left)
 		sections.each do |section_data|
-			if (Time.now > gen_start + gen_timeout)
+			if (!gen_timeout.nil? && Time.now > gen_start + gen_timeout)
 				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
 				break
 			end
@@ -103,7 +104,7 @@ class Game < Gosu::Window
 		#sections.each_with_index do |section_data,index|
 		section_counter = 0
 		while (ret.size < Settings.sections[:count] - 1)
-			if (Time.now > gen_start + gen_timeout)
+			if (!gen_timeout.nil? && Time.now > gen_start + gen_timeout)
 				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
 				break
 			end
@@ -120,7 +121,7 @@ class Game < Gosu::Window
 
 		# Add second border (right)
 		sections.each do |section_data|
-			if (Time.now > gen_start + gen_timeout)
+			if (!gen_timeout.nil? && Time.now > gen_start + gen_timeout)
 				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
 				break
 			end
@@ -160,7 +161,8 @@ class Game < Gosu::Window
 			@year += Settings.year[:step]
 			@year_last_time = Time.now
 			#@people << Person.new  if (Settings.people[:initial_spawns_at].include? @year)
-			@people << Person.new   if (@year % 200 == 0)
+			#@people << Person.new   if (@year % 200 == 0)
+			@people << Person.new   if (@people.empty?)
 		end
 		# Update people
 		@people.each &:update

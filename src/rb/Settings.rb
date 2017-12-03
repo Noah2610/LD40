@@ -46,7 +46,7 @@ class Settings
 				min_distance:  2048,
 				step: {
 					x: 4,
-					y: 1
+					y: 4
 				}
 			},
 		}

@@ -1,4 +1,17 @@
 
+z-indexes:
+	game_bg:          0
+	sections_images:  10
+	minimap:
+		bg:             10
+		sections:       15
+		position:       20
+	year:             300
+	person:           200
+
+
+
+
 Building max width: 32px
 
 Border sections should always have border to the left (in image)

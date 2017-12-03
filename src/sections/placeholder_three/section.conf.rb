@@ -1,4 +1,4 @@
-### placeholder_one
+### placeholder_three
 @biomes = [:forest]
 @border = false
 # Where buildings can spawn, center points
@@ -11,3 +11,7 @@
 	left:  86,
 	right: 128
 }
+# Points for people pathing
+@people_path_points = [
+	{ x: 64, y: 64 }
+]
