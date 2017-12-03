@@ -1,6 +1,19 @@
 
 $section_index = 0
 
+class ::Integer
+	def sign
+		return self  if self == 0
+		return self / self.abs
+	end
+end
+class ::Float
+	def sign
+		return self  if self == 0.0
+		return self / self.abs
+	end
+end
+
 def load_sections directory
 	ret = []
 
@@ -38,6 +51,7 @@ $sections = load_sections DIR[:sections]
 
 
 class Game < Gosu::Window
+	attr_reader :people
 	def initialize
 		#@sections = [
 		#	Section.new(data: $sections[0]),
@@ -49,6 +63,12 @@ class Game < Gosu::Window
 		$camera = Camera.new sections: @sections
 
 		@minimap = MiniMap.new sections: @sections
+
+		@year = Settings.year[:start]
+		@year_last_time = Time.now
+		@year_font = Gosu::Font.new 32
+
+		@people = []
 
 		@bg_color = Gosu::Color.argb 0xff_ffffff
 
@@ -122,12 +142,6 @@ class Game < Gosu::Window
 
 	def button_down id
 		close  if (id == Gosu::KB_Q)
-		case id
-		when Gosu::KB_1
-			@minimap = MiniMap.new w: (@minimap.w - 128), sections: @sections
-		when Gosu::KB_2
-			@minimap = MiniMap.new w: (@minimap.w + 128), sections: @sections
-		end
 	end
 
 	def needs_cursor?
@@ -140,6 +154,14 @@ class Game < Gosu::Window
 		$camera.move :right  if (Controls.right?)
 		# Update MiniMap
 		@minimap.update
+		# Update year
+		if (Time.now >= @year_last_time + Settings.year[:delay])
+			@year += Settings.year[:step]
+			@year_last_time = Time.now
+			@people << Person.new  if (Settings.people[:initial_spawns_at].include? @year)
+		end
+		# Update people
+		@people.each &:update
 	end
 
 	def draw
@@ -151,6 +173,14 @@ class Game < Gosu::Window
 
 		# Draw MiniMap
 		@minimap.draw
+
+		# Draw current year
+		year_pos = Settings.year[:display][:pos]
+		@year_font.draw "Year", year_pos[:x], year_pos[:y] - 32, 300, 1,1, Settings.year[:display][:color]
+		@year_font.draw "#{@year}".rjust(4,"0"), year_pos[:x],year_pos[:y], 300, 1,1, Settings.year[:display][:color]
+
+		# Draw people
+		@people.each &:draw
 	end
 end
 

@@ -29,7 +29,6 @@ class Section
 	end
 
 	def can_have_neighbor? section_right
-		# TODO: biome checking
 		return (
 			( @end_point_heights[:right] == section_right.end_point_heights[:left] ) &&
 			( get_biome(:right) == section_right.get_biome(:left) )

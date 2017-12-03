@@ -1,6 +1,5 @@
 
 class MiniMap
-	attr_reader :w
 	def initialize args
 		@sections = args[:sections]
 		@x = 0

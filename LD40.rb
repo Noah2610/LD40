@@ -4,7 +4,8 @@ DIR = {
 	src:      "./src",
 	rb:       "./src/rb",
 	samples:  "./src/samples",
-	sections: "./src/sections"
+	sections: "./src/sections",
+	people:   "./src/people"
 }
 
 require 'gosu'
@@ -15,6 +16,7 @@ require "#{DIR[:rb]}/Section"
 require "#{DIR[:rb]}/Camera"
 require "#{DIR[:rb]}/Controls"
 require "#{DIR[:rb]}/MiniMap"
+require "#{DIR[:rb]}/Person"
 require "#{DIR[:rb]}/main"
 
 $camera = nil
