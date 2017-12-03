@@ -51,7 +51,7 @@ $sections = load_sections DIR[:sections]
 
 
 class Game < Gosu::Window
-	attr_reader :people
+	attr_reader :sections, :people
 	def initialize
 		#@sections = [
 		#	Section.new(data: $sections[0]),
@@ -142,6 +142,7 @@ class Game < Gosu::Window
 
 	def button_down id
 		close  if (id == Gosu::KB_Q)
+		puts "#{{ x: mouse_x, y: mouse_y }}"  if (id == Gosu::MS_LEFT)
 	end
 
 	def needs_cursor?
@@ -158,7 +159,8 @@ class Game < Gosu::Window
 		if (Time.now >= @year_last_time + Settings.year[:delay])
 			@year += Settings.year[:step]
 			@year_last_time = Time.now
-			@people << Person.new  if (Settings.people[:initial_spawns_at].include? @year)
+			#@people << Person.new  if (Settings.people[:initial_spawns_at].include? @year)
+			@people << Person.new   if (@year % 200 == 0)
 		end
 		# Update people
 		@people.each &:update

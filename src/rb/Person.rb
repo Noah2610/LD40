@@ -28,19 +28,37 @@ class Person
 		unless (distance.nil?)
 			@direction[:x] = distance.sign
 			@direction[:y] = dir_y  unless dir_y.nil?
-			puts @direction.to_s
+		end
+	end
+
+	### TODO:
+	### Don't use build_levels for person paths, use seperate more points (in section config)
+	def find_next_build_level
+		current_section = nil
+		$game.sections.each do |section|
+			if (section.is_inside? x: @x)
+				current_section = section
+				break
+			end
+		end
+
+		unless (current_section.nil?)
+			next_point = current_section.get_closest_build_level x: @x, y: @y, dir: @direction[:x]
+			@direction[:y] = (next_point[:y] - @y).sign  unless (next_point.nil?)
 		end
 	end
 
 	def move
-
 		@x += Settings.people[:move][:step][:x] * @direction[:x]
-		@x += Settings.people[:move][:step][:y] * @direction[:y]
+		@y += Settings.people[:move][:step][:y] * @direction[:y]
 	end
 
 	def update
+		if (@update_counter % Settings.people[:move][:find_interval] == 0)
+			find_closest_person
+			find_next_build_level
+		end
 		move                 if (@update_counter % Settings.people[:move][:interval] == 0)
-		find_closest_person  if (@update_counter % Settings.people[:move][:find_interval] == 0)
 		@update_counter += 1
 	end
 
