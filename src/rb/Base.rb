@@ -7,6 +7,7 @@ class Base
 		@build_level_index = args[:build_level_index]
 		@x = @section.x + build_level[:x]
 		@y = build_level[:y]
+		@image = Gosu::Image.new "#{DIR[:buildings]}/placeholder.png", retro: true
 	end
 
 	def build_level
@@ -14,7 +15,7 @@ class Base
 	end
 
 	def draw
-		Gosu.draw_rect (@x - $camera.pos), @y, 100,100, Gosu::Color.argb(0xff_00ff00), 50
+		@image.draw (@x - (@image.width / 2) - $camera.pos), (@y - @image.height), 150, 1,1
 	end
 end
 

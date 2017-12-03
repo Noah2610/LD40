@@ -8,6 +8,7 @@ z-indexes:
 		position:       20
 	year:             300
 	person:           200
+	buildings:        150
 
 
 

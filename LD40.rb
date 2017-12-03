@@ -1,11 +1,12 @@
 #!/bin/env ruby
 
 DIR = {
-	src:      "./src",
-	rb:       "./src/rb",
-	samples:  "./src/samples",
-	sections: "./src/sections",
-	people:   "./src/people"
+	src:        "./src",
+	rb:         "./src/rb",
+	samples:    "./src/samples",
+	sections:   "./src/sections",
+	people:     "./src/people",
+	buildings:  "./src/buildings"
 }
 
 require 'gosu'
