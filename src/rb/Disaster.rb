@@ -8,6 +8,8 @@ class Disaster
 			h: 0
 		}
 
+		@active = false
+
 		init args
 	end
 
@@ -18,7 +20,7 @@ class Disaster
 	end
 
 	def click ms
-		if ( (ms[:x] > @trigger[:x] && ms[:x] < (@trigger[:x] + @trigger[:w])) &&
+		if ( (ms[:x] > (@trigger[:x] - $camera.pos) && ms[:x] < (@trigger[:x] + @trigger[:w] - $camera.pos)) &&
 				 (ms[:y] > @trigger[:y] && ms[:y] < (@trigger[:y] + @trigger[:h])) )
 			trigger!
 		end

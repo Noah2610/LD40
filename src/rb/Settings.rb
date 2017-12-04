@@ -100,6 +100,8 @@ class Settings
 
 	def self.disasters
 		return {
+			update:     50,
+
 			tornado: {
 				display: {
 					size:       { w: 128, h: 64 },
@@ -109,7 +111,16 @@ class Settings
 				wind_chance:      (1.0 / 1.0),
 				active_time:      5,
 				effect_interval:  10,
-				update:           50
+			},
+
+			earthquake: {
+				h:                32,
+				shake:            8,
+				shake_interval:   6,
+				active_time:      5,
+				interval:         10,
+				die_chance:       (1.0 / 100.0),
+				timeout:          10
 			}
 		}
 	end

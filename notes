@@ -12,6 +12,7 @@ z-indexes:
 	buildings:        150
 	tornado_display:  20
 	tornado_effect:   250
+	earthquake:       20
 
 
 

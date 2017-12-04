@@ -11,6 +11,7 @@ class Section
 		@inverted = false
 		@builds = []
 		@image = args[:data][:image]
+		@shake = 0
 
 		eval(args[:data][:config])
 
@@ -203,7 +204,33 @@ class Section
 	def has_no_tornado!
 		$game.people.each do |person|
 			if (is_inside? x: person.x)
-				person.no_tornado!
+				person.no_tornado!  if (person.in_tornado)
+			end
+		end
+	end
+
+	def has_earthquake!
+		@shake = Settings.disasters[:earthquake][:shake]
+		$game.people.each do |person|
+			if (is_inside? x: person.x)
+				person.earthquake!  unless (person.in_earthquake)
+			end
+		end
+	end
+
+	def has_no_earthquake!
+		@shake = 0
+		$game.people.each do |person|
+			if (is_inside? x: person.x)
+				person.no_earthquake!  if (person.in_earthquake)
+			end
+		end
+	end
+
+	def update
+		if (@shake != 0)
+			if ($update_counter % Settings.disasters[:earthquake][:shake_interval] == 0)
+				@shake *= -1
 			end
 		end
 	end
@@ -228,9 +255,9 @@ class Section
 
 		scale = Settings.sections[:size][:w].to_f / Settings.sections[:image_size][:w].to_f
 		if (inverted?)
-			@image.draw (@x + @size[:w] - $camera.pos), @y, 10, -scale,scale
+			@image.draw (@x + @size[:w] - $camera.pos), (@y + @shake), 10, -scale,scale
 		else
-			@image.draw (@x - $camera.pos), @y, 10, scale,scale
+			@image.draw (@x - $camera.pos), (@y + @shake), 10, scale,scale
 		end
 	end
 end

@@ -24,5 +24,6 @@ require "#{DIR[:rb]}/Group"
 require "#{DIR[:rb]}/Base"
 require "#{DIR[:rb]}/Disaster"
 require "#{DIR[:rb]}/Tornado"
+require "#{DIR[:rb]}/Earthquake"
 require "#{DIR[:rb]}/main"
 

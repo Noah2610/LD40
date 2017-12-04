@@ -36,6 +36,13 @@ class Tornado < Disaster
 		@sections = []
 	end
 
+	def click ms
+		if ( (ms[:x] > @trigger[:x] && ms[:x] < (@trigger[:x] + @trigger[:w])) &&
+				 (ms[:y] > @trigger[:y] && ms[:y] < (@trigger[:y] + @trigger[:h])) )
+			trigger!
+		end
+	end
+
 	def next_image target
 		case target
 		when :display
@@ -97,7 +104,7 @@ class Tornado < Disaster
 	def update
 		next_image :display               if (!@active && $update_counter % Settings.disasters[:tornado][:wind_interval] == 0)
 
-		@sections.each &:has_tornado!     if (@active && ($update_counter % Settings.disasters[:tornado][:update] == 0))
+		@sections.each &:has_tornado!     if (@active && ($update_counter % Settings.disasters[:update] == 0))
 
 		@sections.each &:has_no_tornado!  if (!@active && !@deactivated_at.nil? && (Time.now > (@deactivated_at + 1)))
 

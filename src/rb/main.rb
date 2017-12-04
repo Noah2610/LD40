@@ -93,6 +93,11 @@ class Game < Gosu::Window
 
 		@disasters = [Tornado.new]
 
+		@sections.each do |section|  # Add Earthquakes to each section except borders
+			next  if (section.is_border?)
+			@disasters << Earthquake.new(section: section)
+		end
+
 		@bg_color = Gosu::Color.argb(0xff_cccccc)
 
 		super Settings.screen[:w], Settings.screen[:h]
@@ -115,7 +120,7 @@ class Game < Gosu::Window
 				break
 			end
 			if (section.is_border?)
-				ret << section
+				ret << section.init
 				#section.set_index $section_index.dup
 				prev_section = section
 				break
@@ -131,7 +136,7 @@ class Game < Gosu::Window
 			end
 			section = sections[section_counter].dup
 			if (!section.is_border? && (prev_section.nil? || prev_section.can_have_neighbor?(section)))
-				ret << section
+				ret << section.init
 				#section.set_index $section_index.dup
 				prev_section = section
 			end
@@ -146,7 +151,7 @@ class Game < Gosu::Window
 				break
 			end
 			if (section.is_border? && (prev_section.nil? || prev_section.can_have_neighbor?(section)))
-				ret << section
+				ret << section.init
 				section.invert!
 				break
 			end
@@ -254,7 +259,9 @@ class Game < Gosu::Window
 
 		# New person
 		handle_people            if ($update_counter % Settings.evolution[:handle_interval] == 0)
-		#handle_new_person
+
+		# Update sections (for disasters)
+		@sections.each &:update
 
 		# Update people
 		@people.each &:update
@@ -308,6 +315,5 @@ end
 
 $camera = nil
 $game = Game.new
-$game.sections.each &:init
 $game.show
 
