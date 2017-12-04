@@ -13,7 +13,7 @@ class Person
 		].sample
 		@pivoted = false
 		@wobble_step = Settings.people[:move][:wobble][:step] * [1,-1].sample
-		@group_id = nil
+		@group_id = args[:group_id] || nil
 		@is_wandering = false
 		@in_tornado = false
 		@tornado_section = nil
@@ -29,6 +29,10 @@ class Person
 
 		# debugging
 		@font = Gosu::Font.new 16
+	end
+
+	def is_falling?
+		return @falling
 	end
 
 	def group

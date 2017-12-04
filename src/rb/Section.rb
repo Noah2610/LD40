@@ -216,6 +216,9 @@ class Section
 				person.earthquake!  unless (person.in_earthquake)
 			end
 		end
+		bases.each do |base|
+			base.shake = @shake
+		end
 	end
 
 	def has_no_earthquake!
@@ -225,13 +228,22 @@ class Section
 				person.no_earthquake!  if (person.in_earthquake)
 			end
 		end
+		bases.each do |base|
+			base.shake = 0
+		end
 	end
 
 	def update
 		if (@shake != 0)
 			if ($update_counter % Settings.disasters[:earthquake][:shake_interval] == 0)
 				@shake *= -1
+				bases.each do |base|
+					base.shake *= -1
+					chance = Settings.disasters[:earthquake][:die_chance] * 1.5 * 100.0
+					base.destroy!  if (rand(0 .. 100) < chance)
+				end
 			end
+
 		end
 	end
 

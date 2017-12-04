@@ -25,8 +25,8 @@ class Settings
 	def self.year
 		return {
 			start:            0,
-			step:             50,
-			delay:            2,
+			step:             10,
+			delay:            1,
 			day_night_switch: 100,
 			display: {
 				pos: {
@@ -40,12 +40,12 @@ class Settings
 
 	def self.people
 		return {
-			initial_spawns_at: [50, 100,  250,300,600,650],
+			initial_spawns_at: [10,20,30,40, 80, 120, 160, 200, 300, 400, 500, 600],
 			#initial_spawns_at: [50, 100],
 			size:              { w: 8, h: 12 },
 			image_size:        { w: 8, h: 12 },
 			move: {
-				interval:             30,
+				interval:             10,
 				tornado_interval:     1,
 				tornado_step:         10,
 				fall_interval:        1,
@@ -53,12 +53,12 @@ class Settings
 				find_interval:        100,
 				min_distance:         2048,
 				step: {
-					x: 8,
+					x: 6,
 					y: 2
 				},
 				wobble: {
 					step:     2,
-					interval: 30
+					interval: 10
 				},
 				wander_distance: 2  # in sections
 			},
@@ -85,8 +85,10 @@ class Settings
 
 	def self.builds
 		return {
-			size:       { w: 64, h: 128 },
-			image_size: { w: 32, h: 64  },
+			size:         { w: 64, h: 128 },
+			image_size:   { w: 32, h: 64  },
+			update:       50,
+			baby_chance:  (1.0 / 10.0),
 			types: {
 				wood: {
 
@@ -108,13 +110,13 @@ class Settings
 					image_size: { w: 64, h: 64 }
 				},
 				wind_interval:    100,
-				wind_chance:      (1.0 / 1.0),
+				wind_chance:      (1.0 / 10.0),
 				active_time:      5,
 				effect_interval:  10,
 			},
 
 			earthquake: {
-				h:                32,
+				h:                24,
 				shake:            8,
 				shake_interval:   6,
 				active_time:      5,

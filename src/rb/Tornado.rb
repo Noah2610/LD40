@@ -15,7 +15,7 @@ class Tornado < Disaster
 				Gosu::Image.new("#{DIR[:disasters]}/tornado/display_two.png"),
 				Gosu::Image.new("#{DIR[:disasters]}/tornado/display_three.png")
 			],
-			current: 1,
+			current: 0,
 			x: @trigger[:x],
 			y: @trigger[:y]
 		}

@@ -178,7 +178,7 @@ class Game < Gosu::Window
 		distance = args[:distance]
 		groups = []
 		@people.each do |person|
-			next  if (!person.alive || person.in_tornado)
+			next  if (!person.alive || person.in_tornado || person.is_falling? || person.in_earthquake)
 			closest = person.get_closest_person
 			next  if (closest.nil? || closest[:person].nil? || closest[:distance].nil?)
 			if (closest[:distance].abs <= distance)
@@ -265,6 +265,9 @@ class Game < Gosu::Window
 
 		# Update people
 		@people.each &:update
+
+		# Update bases
+		@bases.each &:update     if ($update_counter % Settings.builds[:update] == 0)
 
 		# Update disasters
 		@disasters.each &:update

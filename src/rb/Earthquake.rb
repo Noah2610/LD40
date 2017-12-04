@@ -10,7 +10,7 @@ class Earthquake < Disaster
 		}
 		@trigger_color = Gosu::Color.argb 0xff_cccccc
 		@activated_at = 0
-		@timeout = Time.now
+		@timeout = Time.now + (Settings.disasters[:earthquake][:timeout] * 2)
 	end
 
 	def trigger!
