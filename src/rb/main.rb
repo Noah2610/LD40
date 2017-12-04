@@ -298,11 +298,6 @@ class Game < Gosu::Window
 	end
 
 	def draw
-		# DEVELOPMENT
-		# fps
-		@font.draw "#{Gosu.fps}", 128,128, 400, 1,1, Gosu::Color.argb(0xff_000000)
-
-
 		# Draw background
 		Gosu.draw_rect 0,0, get_map_width,Settings.screen[:h], @bg_color, 0
 

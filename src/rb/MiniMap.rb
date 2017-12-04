@@ -4,7 +4,6 @@ class MiniMap
 		@sections = args[:sections]
 		@x = 0
 		@y = 0
-		#@w = (@sections.size * Settings.sections[:size][:w])
 		@w = args[:w] || Settings.screen[:w] - Settings.disasters[:tornado][:display][:size][:w]
 		@h = 64
 		@bg_color = Gosu::Color.argb 0x66_dddddd
@@ -20,7 +19,6 @@ class MiniMap
 	end
 
 	def update
-		#@view[:pos] = sections_on_screen * $camera.get_pos_in_percent(:left).to_f
 		@view[:pos] = (@w.to_f / 100.0) * $camera.get_pos_in_percent(:left).to_f
 	end
 

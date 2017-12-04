@@ -246,15 +246,6 @@ class Person
 	end
 
 	def draw
-		# DEVELOPMENT
-		if (is_leader?)
-			@font.draw "LEADER", (@x - $camera.pos), @y - 150, 500, 1,1, Gosu::Color.argb(0xff_ff0000)
-		end
-		unless (group.nil?)
-			@font.draw group.group_id.to_s, (@x - $camera.pos), @y - 100, 500, 1,1, Gosu::Color.argb(0xff_ff0000)
-		end
-
-
 		if (@alive)
 			scale_x = Settings.people[:size][:w].to_f / Settings.people[:image_size][:w].to_f
 			scale_y = Settings.people[:size][:h].to_f / Settings.people[:image_size][:h].to_f

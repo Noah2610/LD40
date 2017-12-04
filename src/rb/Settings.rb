@@ -41,7 +41,6 @@ class Settings
 	def self.people
 		return {
 			initial_spawns_at: [10,20,30,40,50,60,70,80,90,100,120,140,160,180,200,240,280,320,360,400,500,600,700,800,900,1000],
-			#initial_spawns_at: [50, 100],
 			size:              { w: 8, h: 12 },
 			image_size:        { w: 8, h: 12 },
 			move: {

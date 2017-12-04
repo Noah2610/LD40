@@ -3,9 +3,6 @@ class Section
 	attr_reader :x,:y, :image, :biomes, :end_point_heights, :build_levels, :section_index
 	def initialize args = {}
 		@size = Settings.sections[:size]
-		#@section_index = $section_index
-		#@x = args[:x] || @section_index * @size[:w]
-		#@y = args[:y] || Settings.screen[:h] - @size[:h]
 		@x = 0
 		@y = Settings.screen[:h] - @size[:h]
 		@inverted = false
@@ -21,9 +18,6 @@ class Section
 		adjust_people_path_points
 
 		@disaster = :nil  unless (defined? @disaster)
-
-		# for debugging
-		@font = Gosu::Font.new 16
 	end
 
 	def init
@@ -250,23 +244,6 @@ class Section
 	end
 
 	def draw
-		# DEVELOPMENT
-		# debug text
-		@debug_info = [ @biomes, @end_point_heights, @inverted, is_border?]
-		@font.draw_rel @debug_info.to_s, ((@x - $camera.pos) + @size[:w] / 2), 32, 100, 0.5,0.5, 1,1, Gosu::Color.argb(0xff_000000)
-		# build level points
-		@build_levels.each do |point|
-			Gosu.draw_rect (@x + point[:x] - $camera.pos), (point[:y]), 8,8, Gosu::Color.argb(0xff_ff0000), 500
-		end
-		# people_path_points
-		@people_path_points.each do |point|
-			Gosu.draw_rect (@x + point[:x] - $camera.pos), (point[:y]), 8,8, Gosu::Color.argb(0xff_0000ff), 500
-		end
-		# end_points
-		Gosu.draw_rect (@x - $camera.pos), (@end_point_heights[:left]), 8,8, Gosu::Color.argb(0xff_00ff00), 500
-		Gosu.draw_rect (@x + @size[:w] - $camera.pos), (@end_point_heights[:right]), 8,8, Gosu::Color.argb(0xff_00ff00), 500
-
-
 		scale = Settings.sections[:size][:w].to_f / Settings.sections[:image_size][:w].to_f
 		if (inverted?)
 			@image.draw (@x + @size[:w] - $camera.pos), (@y + @shake), 10, -scale,scale
