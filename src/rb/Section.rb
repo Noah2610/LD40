@@ -164,12 +164,33 @@ class Section
 	end
 
 	def invert!
-		tmp = @end_point_heights[:left].dup
-		@end_point_heights[:left] = @end_point_heights[:right].dup
-		@end_point_heights[:right] = tmp
-		@build_levels.reverse!
-		@people_path_points.reverse!
+		@end_point_heights = @end_point_heights.to_a.reverse.to_h
+
+		new = { left: nil, right: nil }
+		@end_point_heights.each do |k,v|
+			case k
+			when :left
+				new[:right] = v
+			when :right
+				new[:left] = v
+			end
+		end
+		@end_point_heights = new
+
+		@people_path_points = invert_positions @people_path_points
+		@build_levels = invert_positions @build_levels
 		@inverted = true
+	end
+
+	def invert_positions arr
+		ret = []
+		arr.each do |point|
+			ret << {
+				x: Settings.sections[:size][:w] - point[:x],
+				y: point[:y]
+			}
+		end
+		return ret
 	end
 
 	def adjust_build_levels
