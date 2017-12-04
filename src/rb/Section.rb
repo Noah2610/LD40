@@ -167,6 +167,8 @@ class Section
 		tmp = @end_point_heights[:left].dup
 		@end_point_heights[:left] = @end_point_heights[:right].dup
 		@end_point_heights[:right] = tmp
+		@build_levels.reverse!
+		@people_path_points.reverse!
 		@inverted = true
 	end
 
