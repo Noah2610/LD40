@@ -8,7 +8,10 @@ z-indexes:
 		position:       20
 	year:             300
 	person:           200
+	person_rip:       175
 	buildings:        150
+	tornado_display:  20
+	tornado_effect:   250
 
 
 

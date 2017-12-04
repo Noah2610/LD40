@@ -45,9 +45,13 @@ class Settings
 			size:              { w: 8, h: 12 },
 			image_size:        { w: 8, h: 12 },
 			move: {
-				interval:      30,
-				find_interval: 100,
-				min_distance:  2048,
+				interval:             30,
+				tornado_interval:     1,
+				tornado_step:         10,
+				fall_interval:        1,
+				fall_step:            10,
+				find_interval:        100,
+				min_distance:         2048,
 				step: {
 					x: 8,
 					y: 2
@@ -90,6 +94,22 @@ class Settings
 				stone: {
 
 				}
+			}
+		}
+	end
+
+	def self.disasters
+		return {
+			tornado: {
+				display: {
+					size:       { w: 128, h: 64 },
+					image_size: { w: 64, h: 64 }
+				},
+				wind_interval:    50,           # 200
+				wind_chance:      (1.0 / 1.0),  # 1.0 / 10.0
+				active_time:      5,
+				effect_interval:  10,
+				update:           50
 			}
 		}
 	end

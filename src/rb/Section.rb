@@ -192,6 +192,22 @@ class Section
 		end
 	end
 
+	def has_tornado!
+		$game.people.each do |person|
+			if (is_inside? x: person.x)
+				person.tornado!  unless (person.in_tornado)
+			end
+		end
+	end
+
+	def has_no_tornado!
+		$game.people.each do |person|
+			if (is_inside? x: person.x)
+				person.no_tornado!
+			end
+		end
+	end
+
 	def draw
 		# DEVELOPMENT
 		# debug text

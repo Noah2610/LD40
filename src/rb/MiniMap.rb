@@ -5,7 +5,7 @@ class MiniMap
 		@x = 0
 		@y = 0
 		#@w = (@sections.size * Settings.sections[:size][:w])
-		@w = args[:w] || Settings.screen[:w]
+		@w = args[:w] || Settings.screen[:w] - Settings.disasters[:tornado][:display][:size][:w]
 		@h = 64
 		@bg_color = Gosu::Color.argb 0x66_dddddd
 		@fg_color = Gosu::Color.argb 0x66_999999

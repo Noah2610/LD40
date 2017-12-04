@@ -1,6 +1,7 @@
 
 $section_index = 0
 $group_ids = 0
+$update_counter = 0
 
 class ::Integer
 	def sign
@@ -90,9 +91,9 @@ class Game < Gosu::Window
 		@groups = []
 		@bases = []
 
-		@bg_color = Gosu::Color.argb(0xff_cccccc)
+		@disasters = [Tornado.new]
 
-		@update_counter = 0
+		@bg_color = Gosu::Color.argb(0xff_cccccc)
 
 		super Settings.screen[:w], Settings.screen[:h]
 		self.caption = "Mother Nature"
@@ -172,6 +173,7 @@ class Game < Gosu::Window
 		distance = args[:distance]
 		groups = []
 		@people.each do |person|
+			next  unless (person.alive)
 			closest = person.get_closest_person
 			next  if (closest.nil? || closest[:person].nil? || closest[:distance].nil?)
 			if (closest[:distance].abs <= distance)
@@ -224,7 +226,11 @@ class Game < Gosu::Window
 
 	def button_down id
 		close  if (id == Gosu::KB_Q)
-		debugger  if (id == Gosu::MS_LEFT)
+		if (id == Gosu::MS_LEFT)
+			@disasters.each do |disaster|
+				disaster.click x: mouse_x, y: mouse_y
+			end
+		end
 	end
 
 	def needs_cursor?
@@ -247,13 +253,16 @@ class Game < Gosu::Window
 		end
 
 		# New person
-		handle_people            if (@update_counter % Settings.evolution[:handle_interval] == 0)
+		handle_people            if ($update_counter % Settings.evolution[:handle_interval] == 0)
 		#handle_new_person
 
 		# Update people
 		@people.each &:update
 
-		@update_counter += 1
+		# Update disasters
+		@disasters.each &:update
+
+		$update_counter += 1
 	end
 
 	def draw
@@ -286,6 +295,9 @@ class Game < Gosu::Window
 
 		# Draw bases
 		@bases.each &:draw
+
+		# Draw disasters
+		@disasters.each &:draw
 	end
 end
 

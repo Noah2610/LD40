@@ -6,7 +6,9 @@ DIR = {
 	samples:    "./src/samples",
 	sections:   "./src/sections",
 	people:     "./src/people",
-	buildings:  "./src/buildings"
+	buildings:  "./src/buildings",
+	disasters:  "./src/disasters",
+	misc:       "./src/misc"
 }
 
 require 'gosu'
@@ -20,5 +22,7 @@ require "#{DIR[:rb]}/MiniMap"
 require "#{DIR[:rb]}/Person"
 require "#{DIR[:rb]}/Group"
 require "#{DIR[:rb]}/Base"
+require "#{DIR[:rb]}/Disaster"
+require "#{DIR[:rb]}/Tornado"
 require "#{DIR[:rb]}/main"
 
