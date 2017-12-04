@@ -173,7 +173,7 @@ class Game < Gosu::Window
 		distance = args[:distance]
 		groups = []
 		@people.each do |person|
-			next  unless (person.alive)
+			next  if (!person.alive || person.in_tornado)
 			closest = person.get_closest_person
 			next  if (closest.nil? || closest[:person].nil? || closest[:distance].nil?)
 			if (closest[:distance].abs <= distance)
@@ -247,7 +247,7 @@ class Game < Gosu::Window
 		if (Time.now >= @year_last_time + Settings.year[:delay])
 			@year += Settings.year[:step]
 			@year_last_time = Time.now
-			@people << Person.new   if (Settings.people[:initial_spawns_at].include? @year)
+			@people << Person.new(initial_spawn: true)   if (Settings.people[:initial_spawns_at].include? @year)
 			#@people << Person.new   if (@year % 200 == 0)
 			#@people << Person.new   if (@people.empty?)
 		end
@@ -287,8 +287,12 @@ class Game < Gosu::Window
 
 		# Draw people count
 		people_pos = Settings.people[:display][:pos]
+		count = 0
+		@people.each do |person|
+			count += 1  if (person.alive)
+		end
 		@people_font.draw "People", people_pos[:x], people_pos[:y] - 32, 300, 1,1, Settings.people[:display][:color]
-		@people_font.draw "#{@people.size}", people_pos[:x],people_pos[:y], 300, 1,1, Settings.people[:display][:color]
+		@people_font.draw "#{count}", people_pos[:x],people_pos[:y], 300, 1,1, Settings.people[:display][:color]
 
 		# Draw people
 		@people.each &:draw

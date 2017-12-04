@@ -15,7 +15,7 @@ class Tornado < Disaster
 				Gosu::Image.new("#{DIR[:disasters]}/tornado/display_two.png"),
 				Gosu::Image.new("#{DIR[:disasters]}/tornado/display_three.png")
 			],
-			current: 0,
+			current: 1,
 			x: @trigger[:x],
 			y: @trigger[:y]
 		}
@@ -31,6 +31,7 @@ class Tornado < Disaster
 
 		@active = false
 		@activated_at = nil
+		@deactivated_at = nil
 		@strength = nil
 		@sections = []
 	end
@@ -88,16 +89,19 @@ class Tornado < Disaster
 		@sections.each &:has_no_tornado!
 		@active = false
 		@activated_at = nil
+		@deactivated_at = Time.now
 		@strength = nil
 		@sections = []
 	end
 
 	def update
-		next_image :display            if (!@active && $update_counter % Settings.disasters[:tornado][:wind_interval] == 0)
+		next_image :display               if (!@active && $update_counter % Settings.disasters[:tornado][:wind_interval] == 0)
 
-		deactivate                     if (@active && Time.now > (@activated_at + Settings.disasters[:tornado][:active_time]))
+		@sections.each &:has_tornado!     if (@active && ($update_counter % Settings.disasters[:tornado][:update] == 0))
 
-		@sections.each &:has_tornado!  if (@active && ($update_counter % Settings.disasters[:tornado][:update] == 0))
+		@sections.each &:has_no_tornado!  if (!@active && !@deactivated_at.nil? && (Time.now > (@deactivated_at + 1)))
+
+		deactivate                        if (@active && Time.now > (@activated_at + Settings.disasters[:tornado][:active_time]))
 	end
 
 	def draw

@@ -105,8 +105,8 @@ class Settings
 					size:       { w: 128, h: 64 },
 					image_size: { w: 64, h: 64 }
 				},
-				wind_interval:    50,           # 200
-				wind_chance:      (1.0 / 1.0),  # 1.0 / 10.0
+				wind_interval:    100,
+				wind_chance:      (1.0 / 1.0),
 				active_time:      5,
 				effect_interval:  10,
 				update:           50

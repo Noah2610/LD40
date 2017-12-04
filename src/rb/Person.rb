@@ -20,6 +20,11 @@ class Person
 		@falling = false
 		@alive = true
 
+		if args[:initial_spawn]
+			@falling = true
+			@y = -10
+		end
+
 
 		# debugging
 		@font = Gosu::Font.new 16
@@ -140,6 +145,7 @@ class Person
 	end
 
 	def no_tornado!
+		return  unless (@in_tornado)
 		@falling = true
 	end
 
