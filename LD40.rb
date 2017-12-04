@@ -22,7 +22,3 @@ require "#{DIR[:rb]}/Group"
 require "#{DIR[:rb]}/Base"
 require "#{DIR[:rb]}/main"
 
-$camera = nil
-$game = Game.new
-$game.show
-

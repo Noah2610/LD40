@@ -128,14 +128,12 @@ class Person
 
 	def draw
 		# DEVELOPMENT
-=begin
 		if (is_leader?)
 			@font.draw "LEADER", (@x - $camera.pos), @y - 150, 500, 1,1, Gosu::Color.argb(0xff_ff0000)
 		end
 		unless (group.nil?)
 			@font.draw group.group_id.to_s, (@x - $camera.pos), @y - 100, 500, 1,1, Gosu::Color.argb(0xff_ff0000)
 		end
-=end
 
 
 		@image.draw (@x - $camera.pos), (@y + @wobble_step), 200, 4,4

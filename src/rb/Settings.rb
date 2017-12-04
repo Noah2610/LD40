@@ -18,15 +18,16 @@ class Settings
 		return {
 			size:       { w: 512, h: 512 },
 			image_size: { w: 128, h: 128 },
-			count: 8
+			count: 32
 		}
 	end
 
 	def self.year
 		return {
-			start: 0,
-			step:  50,
-			delay: 1,
+			start:            0,
+			step:             50,
+			delay:            2,
+			day_night_switch: 100,
 			display: {
 				pos: {
 					x: (self.screen[:w] - 128),

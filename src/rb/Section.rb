@@ -1,14 +1,17 @@
 
 class Section
-	attr_reader :x,:y, :image, :biomes, :end_point_heights, :build_levels
+	attr_reader :x,:y, :image, :biomes, :end_point_heights, :build_levels, :section_index
 	def initialize args = {}
 		@size = Settings.sections[:size]
-		@section_index = $section_index
-		@x = args[:x] || @section_index * @size[:w]
-		@y = args[:y] || Settings.screen[:h] - @size[:h]
+		#@section_index = $section_index
+		#@x = args[:x] || @section_index * @size[:w]
+		#@y = args[:y] || Settings.screen[:h] - @size[:h]
+		@x = 0
+		@y = Settings.screen[:h] - @size[:h]
 		@inverted = false
 		@builds = []
 		@image = args[:data][:image]
+
 		eval(args[:data][:config])
 
 		# Adjust build_level point positions
@@ -16,9 +19,19 @@ class Section
 		adjust_end_point_heights
 		adjust_people_path_points
 
+		@disaster = :nil  unless (defined? @disaster)
+
 		# for debugging
-		@font = Gosu::Font.new 24
-		@debug_info = [ @biomes, @end_point_heights ]
+		@font = Gosu::Font.new 16
+	end
+
+	def init
+		index = 0
+		@section_index = $section_index.dup
+		@x = @size[:w] * @section_index
+		$section_index += 1
+
+		return self
 	end
 
 	def self.exists? id, opts
@@ -129,6 +142,9 @@ class Section
 
 	def can_have_neighbor? section_right
 		return (
+			@end_point_heights[:right] == section_right.end_point_heights[:left]
+		)
+		return (
 			( @end_point_heights[:right] == section_right.end_point_heights[:left] ) &&
 			( get_biome(:right) == section_right.get_biome(:left) )
 		)
@@ -138,11 +154,18 @@ class Section
 		return @border
 	end
 
+	def to_border!
+		@border = true
+	end
+
 	def inverted?
 		return @inverted
 	end
 
 	def invert!
+		tmp = @end_point_heights[:left].dup
+		@end_point_heights[:left] = @end_point_heights[:right].dup
+		@end_point_heights[:right] = tmp
 		@inverted = true
 	end
 
@@ -172,7 +195,7 @@ class Section
 	def draw
 		# DEVELOPMENT
 		# debug text
-=begin
+		@debug_info = [ @biomes, @end_point_heights, @inverted, is_border?]
 		@font.draw_rel @debug_info.to_s, ((@x - $camera.pos) + @size[:w] / 2), 32, 100, 0.5,0.5, 1,1, Gosu::Color.argb(0xff_000000)
 		# build level points
 		@build_levels.each do |point|
@@ -185,7 +208,6 @@ class Section
 		# end_points
 		Gosu.draw_rect (@x - $camera.pos), (@end_point_heights[:left]), 8,8, Gosu::Color.argb(0xff_00ff00), 500
 		Gosu.draw_rect (@x + @size[:w] - $camera.pos), (@end_point_heights[:right]), 8,8, Gosu::Color.argb(0xff_00ff00), 500
-=end
 
 
 		scale = Settings.sections[:size][:w].to_f / Settings.sections[:image_size][:w].to_f

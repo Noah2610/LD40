@@ -16,11 +16,11 @@ class ::Float
 end
 
 def load_sections directory
-	ret = []
+	datas = []
 
 	dir_parent = Dir.new directory
 	dir_parent.each do |parent|
-		next  if (/\A\.{1,2}\z/ =~ parent)
+		next  if (parent == "." || parent == "..")
 		png = nil
 		conf = nil
 		if (Dir.exists? "#{directory}/#{parent}")
@@ -37,14 +37,25 @@ def load_sections directory
 		# add section data if .png and .conf.rb are present
 		if (File.exists?(png) && File.exists?(conf))
 			size = [Settings.sections[:image_size][:w], Settings.sections[:image_size][:w]]
-			ret << {
-				name:    parent.to_sym,
+			data = {
+				name:    parent,
 				image:   Gosu::Image.new(png, rect: [0,0,size[0],size[1]], retro: true),
 				config:  File.read(conf)
 			}
+			datas << data
 		end
 	end
 
+	ret = []
+	datas.each do |data|
+		section = Section.new data: data
+		ret << section
+		if (!section.is_border?)
+			section2 = Section.new data: data
+			section2.invert!
+			ret << section2
+		end
+	end
 	return ret
 end
 
@@ -54,12 +65,8 @@ $sections = load_sections DIR[:sections]
 class Game < Gosu::Window
 	attr_reader :sections, :people, :groups, :bases
 	def initialize
-		#@sections = [
-		#	Section.new(data: $sections[0]),
-		#	Section.new(data: $sections[1])
-		#]
-
 		@sections = gen_sections $sections
+		$sections = nil
 
 		$camera = Camera.new sections: @sections
 
@@ -75,7 +82,7 @@ class Game < Gosu::Window
 		@groups = []
 		@bases = []
 
-		@bg_color = Gosu::Color.argb 0xff_ffffff
+		@bg_color = Gosu::Color.argb(0xff_cccccc)
 
 		@update_counter = 0
 
@@ -93,54 +100,58 @@ class Game < Gosu::Window
 		gen_timeout = nil
 
 		# Add first border (left)
-		sections.each do |section_data|
+		sections.each do |section|
 			if (!gen_timeout.nil? && Time.now > gen_start + gen_timeout)
 				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
 				break
 			end
-			section = Section.new data: section_data
 			if (section.is_border?)
 				ret << section
+				#section.set_index $section_index.dup
 				prev_section = section
-				$section_index += 1
 				break
 			end
 		end
 
 		# Add middle sections
-		#sections.each_with_index do |section_data,index|
 		section_counter = 0
 		while (ret.size < Settings.sections[:count] - 1)
 			if (!gen_timeout.nil? && Time.now > gen_start + gen_timeout)
 				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
 				break
 			end
-			#break  if (ret.size >= Settings.sections[:count] - 1)
-			section = Section.new data: sections[section_counter]
+			section = sections[section_counter].dup
 			if (!section.is_border? && (prev_section.nil? || prev_section.can_have_neighbor?(section)))
 				ret << section
+				#section.set_index $section_index.dup
 				prev_section = section
-				$section_index += 1
 			end
 			section_counter += 1
 			section_counter = 0  if (section_counter >= sections.size)
 		end
 
 		# Add second border (right)
-		sections.each do |section_data|
+		sections.each do |section|
 			if (!gen_timeout.nil? && Time.now > gen_start + gen_timeout)
 				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
 				break
 			end
-			section = Section.new data: section_data
 			if (section.is_border? && (prev_section.nil? || prev_section.can_have_neighbor?(section)))
 				ret << section
 				section.invert!
-				$section_index += 1
 				break
 			end
 		end
 
+		# Check if first and last sections are borders.
+		# If not, interpret them as such
+		[0,(ret.size - 1)].each do |n|
+			unless (ret[n].is_border?)
+				ret[n].to_border!
+			end
+		end
+
+		puts "DONE"
 		return ret
 	end
 
@@ -205,7 +216,7 @@ class Game < Gosu::Window
 
 	def button_down id
 		close  if (id == Gosu::KB_Q)
-		puts "#{{ x: mouse_x, y: mouse_y }}"  if (id == Gosu::MS_LEFT)
+		debugger  if (id == Gosu::MS_LEFT)
 	end
 
 	def needs_cursor?
@@ -222,8 +233,8 @@ class Game < Gosu::Window
 		if (Time.now >= @year_last_time + Settings.year[:delay])
 			@year += Settings.year[:step]
 			@year_last_time = Time.now
-			#@people << Person.new  if (Settings.people[:initial_spawns_at].include? @year)
-			@people << Person.new   if (@year % 200 == 0)
+			@people << Person.new   if (Settings.people[:initial_spawns_at].include? @year)
+			#@people << Person.new   if (@year % 200 == 0)
 			#@people << Person.new   if (@people.empty?)
 		end
 
@@ -244,7 +255,7 @@ class Game < Gosu::Window
 
 
 		# Draw background
-		Gosu.draw_rect 0,0, Settings.map[:w],Settings.map[:h], @bg_color, 0
+		Gosu.draw_rect 0,0, get_map_width,Settings.screen[:h], @bg_color, 0
 
 		# Draw Sections
 		@sections.each &:draw
@@ -269,4 +280,10 @@ class Game < Gosu::Window
 		@bases.each &:draw
 	end
 end
+
+
+$camera = nil
+$game = Game.new
+$game.sections.each &:init
+$game.show
 
