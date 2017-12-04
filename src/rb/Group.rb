@@ -16,6 +16,10 @@ class Group
 		return @base
 	end
 
+	def remove_base
+		@base = nil
+	end
+
 	def has_base?
 		return !!@base
 	end

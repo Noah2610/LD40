@@ -28,6 +28,7 @@ class Base
 	end
 
 	def destroy!
+		group.remove_base
 		$game.bases.delete self
 	end
 

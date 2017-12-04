@@ -3,6 +3,7 @@ class Person
 	attr_reader :x,:y, :alive, :in_tornado, :in_earthquake
 	attr_accessor :group_id
 	def initialize args = {}
+		$can_win_or_lose = true
 		file = get_random_file("#{DIR[:people]}", "png")
 		@image = Gosu::Image.new file, retro: true
 		@x = args[:x] || rand(Settings.sections[:size][:w] .. ($game.get_map_width - Settings.sections[:size][:w]))
@@ -93,12 +94,12 @@ class Person
 		@direction[:x] = distance.sign  unless (distance.nil?)
 	end
 
-	def init_base
+	def new_base
 		current_section = Section.find x: @x
 		ids = []
-		ids << current_section.id - 1  if (Section.exists?(current_section.id - 1, border: false, only_base: group.base))
-		ids << current_section.id      if (Section.exists?(current_section.id, border: false, only_base: group.base))
-		ids << current_section.id + 1  if (Section.exists?(current_section.id + 1, border: false, only_base: group.base))
+		ids << current_section.id - 1  if (Section.exists?(current_section.id - 1, border: false))
+		ids << current_section.id      if (Section.exists?(current_section.id, border: false))
+		ids << current_section.id + 1  if (Section.exists?(current_section.id + 1, border: false))
 		sections = Section.get_by_ids ids
 		if (sections.any?)
 			section = sections.sample
@@ -175,6 +176,7 @@ class Person
 	end
 
 	def die!
+		$deaths += 1
 		@alive = false
 		@image = Gosu::Image.new "#{DIR[:misc]}/rip.png"
 	end
@@ -226,12 +228,14 @@ class Person
 			elsif (!group.nil? && is_leader? && !group.has_base?)
 				# IN GROUP - IS LEADER - NO BASE
 				if (group.get_people.size >= Settings.evolution[:init_base_at])
-					init_base
+					new_base
 				end
 
 			elsif (!group.nil? && is_leader? && group.has_base?)
 				# IN GROUP - IS LEADER - HAS BASE
-				find_base
+				if (group.get_people.size >= Settings.evolution[:new_base_interval])
+					new_base
+				end
 			end
 
 			find_next_path_point

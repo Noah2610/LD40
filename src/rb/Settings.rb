@@ -18,7 +18,7 @@ class Settings
 		return {
 			size:       { w: 512, h: 512 },
 			image_size: { w: 128, h: 128 },
-			count: 8
+			count: 16
 		}
 	end
 
@@ -40,7 +40,7 @@ class Settings
 
 	def self.people
 		return {
-			initial_spawns_at: [10,20,30,40, 80, 120, 160, 200, 300, 400, 500, 600],
+			initial_spawns_at: [10,20,30,40,50,60,70,80,90,100,120,140,160,180,200,240,280,320,360,400,500,600,700,800,900,1000],
 			#initial_spawns_at: [50, 100],
 			size:              { w: 8, h: 12 },
 			image_size:        { w: 8, h: 12 },
@@ -68,18 +68,25 @@ class Settings
 					y: 192,
 				},
 				color: Gosu::Color.argb(0xcc_0000ff)
+			},
+			display_dead: {
+				pos: {
+					x: (self.screen[:w] - 128),
+					y: 252,
+				}
 			}
 		}
 	end
 
 	def self.evolution
 		return {
-			handle_interval: 50,
-			baby_interval:   50,
-			baby_chance:     (1.0 / 10.0),
-			baby_distance:   64,
-			group_distance:  128,
-			init_base_at:    4   # people
+			handle_interval:    50,
+			baby_interval:      50,
+			baby_chance:        (1.0 / 10.0),
+			baby_distance:      64,
+			group_distance:     128,
+			init_base_at:       4,   # people
+			new_base_interval:  200
 		}
 	end
 
@@ -109,8 +116,8 @@ class Settings
 					size:       { w: 128, h: 64 },
 					image_size: { w: 64, h: 64 }
 				},
-				wind_interval:    100,
-				wind_chance:      (1.0 / 10.0),
+				wind_interval:    75,
+				wind_chance:      (1.0 / 5.0),
 				active_time:      5,
 				effect_interval:  10,
 			},
@@ -119,9 +126,9 @@ class Settings
 				h:                24,
 				shake:            8,
 				shake_interval:   6,
-				active_time:      5,
+				active_time:      4,
 				interval:         10,
-				die_chance:       (1.0 / 100.0),
+				die_chance:       (1.0 / 75.0),
 				timeout:          10
 			}
 		}

@@ -2,6 +2,8 @@
 $section_index = 0
 $group_ids = 0
 $update_counter = 0
+$deaths = 0
+$can_win_or_lose = false
 
 class ::Integer
 	def sign
@@ -75,6 +77,12 @@ end
 class Game < Gosu::Window
 	attr_reader :sections, :people, :groups, :bases
 	def initialize
+		@has_lost = false
+		@has_won = false
+
+		@font = Gosu::Font.new 32
+		@final_font = Gosu::Font.new 128
+
 		@sections = gen_sections load_sections(DIR[:sections])
 
 		$camera = Camera.new sections: @sections
@@ -83,9 +91,6 @@ class Game < Gosu::Window
 
 		@year = Settings.year[:start]
 		@year_last_time = Time.now
-		@year_font = Gosu::Font.new 32
-
-		@people_font = Gosu::Font.new 32
 
 		@people = []
 		@groups = []
@@ -225,8 +230,17 @@ class Game < Gosu::Window
 
 	def new_base args
 		build_level_index = rand(args[:section].build_levels.size)
+		return  if (@bases.map { |b| {x: b.x, y: b.y} == args[:section].build_levels[build_level_index] }.include? true)
 		@bases << Base.new(group: args[:group], section: args[:section], build_level_index: build_level_index)
 		args[:group].add_base @bases.last
+	end
+
+	def win
+		@has_won = true
+	end
+
+	def lose
+		@has_lost = true
 	end
 
 	def button_down id
@@ -243,6 +257,8 @@ class Game < Gosu::Window
 	end
 
 	def update
+		return  if (@has_lost)
+
 		# Move camera
 		$camera.move :left   if (Controls.left?)
 		$camera.move :right  if (Controls.right?)
@@ -272,13 +288,19 @@ class Game < Gosu::Window
 		# Update disasters
 		@disasters.each &:update
 
+		# Win condition
+		win   if ($can_win_or_lose && @people.size - $deaths <= 0 && @bases.size == 0)
+
+		# Lose condition
+		lose  if ($can_win_or_lose && @bases.size >= @sections.size)
+
 		$update_counter += 1
 	end
 
 	def draw
 		# DEVELOPMENT
 		# fps
-		@year_font.draw "#{Gosu.fps}", 128,128, 400, 1,1, Gosu::Color.argb(0xff_000000)
+		@font.draw "#{Gosu.fps}", 128,128, 400, 1,1, Gosu::Color.argb(0xff_000000)
 
 
 		# Draw background
@@ -292,17 +314,18 @@ class Game < Gosu::Window
 
 		# Draw current year
 		year_pos = Settings.year[:display][:pos]
-		@year_font.draw "Year", year_pos[:x], year_pos[:y] - 32, 300, 1,1, Settings.year[:display][:color]
-		@year_font.draw "#{@year}".rjust(4,"0"), year_pos[:x],year_pos[:y], 300, 1,1, Settings.year[:display][:color]
+		@font.draw "Year", year_pos[:x], year_pos[:y] - 32, 300, 1,1, Settings.year[:display][:color]
+		@font.draw "#{@year}".rjust(4,"0"), year_pos[:x],year_pos[:y], 300, 1,1, Settings.year[:display][:color]
 
 		# Draw people count
 		people_pos = Settings.people[:display][:pos]
-		count = 0
-		@people.each do |person|
-			count += 1  if (person.alive)
-		end
-		@people_font.draw "People", people_pos[:x], people_pos[:y] - 32, 300, 1,1, Settings.people[:display][:color]
-		@people_font.draw "#{count}", people_pos[:x],people_pos[:y], 300, 1,1, Settings.people[:display][:color]
+		@font.draw "People", people_pos[:x], people_pos[:y] - 32, 300, 1,1, Settings.people[:display][:color]
+		@font.draw "#{@people.size - $deaths}", people_pos[:x],people_pos[:y], 300, 1,1, Settings.people[:display][:color]
+
+		# Draw people death counter
+		dead_pos = Settings.people[:display_dead][:pos]
+		@font.draw "Deaths", dead_pos[:x], dead_pos[:y] - 32, 300, 1,1, Settings.people[:display][:color]
+		@font.draw "#{$deaths}", dead_pos[:x],dead_pos[:y], 300, 1,1, Settings.people[:display][:color]
 
 		# Draw people
 		@people.each &:draw
@@ -312,6 +335,15 @@ class Game < Gosu::Window
 
 		# Draw disasters
 		@disasters.each &:draw
+
+		# Draw win/lose text
+		if (@has_won)
+			@final_font.draw_rel "Congratulations!", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 - 48), 1000, 0.5,0.5, 1,1, 0xff_0000ff
+			@final_font.draw_rel "YOU HAVE WON", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 + 48), 1000, 0.5,0.5, 1,1, 0xff_00ff00
+		elsif (@has_lost)
+			@final_font.draw_rel "Oh No :(", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 - 48), 1000, 0.5,0.5, 1,1, 0xff_0000ff
+			@final_font.draw_rel "You have lost!", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 + 48), 1000, 0.5,0.5, 1,1, 0xff_ff0000
+		end
 	end
 end
 
