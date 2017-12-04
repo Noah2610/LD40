@@ -59,14 +59,22 @@ def load_sections directory
 	return ret
 end
 
-$sections = load_sections DIR[:sections]
+
+def get_random_file directory, extension = "png"
+	files = []
+	dir = Dir.new(directory)
+	dir.each do |file|
+		next                             if (Dir.exists? file)
+		files << "#{directory}/#{file}"  if (/\A.+\.#{extension}\z/ =~ file)
+	end
+	return files.sample
+end
 
 
 class Game < Gosu::Window
 	attr_reader :sections, :people, :groups, :bases
 	def initialize
-		@sections = gen_sections $sections
-		$sections = nil
+		@sections = gen_sections load_sections(DIR[:sections])
 
 		$camera = Camera.new sections: @sections
 

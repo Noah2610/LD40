@@ -1,4 +1,4 @@
-### 112-96
+### 96-96
 @biomes = [:field]
 @border = false
 # Where buildings can spawn, center points
@@ -7,7 +7,7 @@
 ]
 # End points of sections, for nice ground flow
 @end_point_heights = {
-	left:  112,
+	left:  96,
 	right: 96
 }
 # Points for people pathing

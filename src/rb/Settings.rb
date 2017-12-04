@@ -18,7 +18,7 @@ class Settings
 		return {
 			size:       { w: 512, h: 512 },
 			image_size: { w: 128, h: 128 },
-			count: 32
+			count: 8
 		}
 	end
 
@@ -40,8 +40,10 @@ class Settings
 
 	def self.people
 		return {
-			initial_spawns_at: [50, 250,300,600,650],
+			initial_spawns_at: [50, 100,  250,300,600,650],
 			#initial_spawns_at: [50, 100],
+			size:              { w: 8, h: 12 },
+			image_size:        { w: 8, h: 12 },
 			move: {
 				interval:      30,
 				find_interval: 100,
@@ -53,7 +55,8 @@ class Settings
 				wobble: {
 					step:     2,
 					interval: 30
-				}
+				},
+				wander_distance: 2  # in sections
 			},
 			display: {
 				pos: {
@@ -78,7 +81,16 @@ class Settings
 
 	def self.builds
 		return {
+			size:       { w: 64, h: 128 },
+			image_size: { w: 32, h: 64  },
+			types: {
+				wood: {
 
+				},
+				stone: {
+
+				}
+			}
 		}
 	end
 

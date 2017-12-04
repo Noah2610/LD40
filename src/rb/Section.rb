@@ -113,7 +113,7 @@ class Section
 		args[:x] = args[:x].dup
 		args[:x] -= @x
 		ret = nil
-		people_path_points = @people_path_points
+		people_path_points = [].concat(@people_path_points).concat(@build_levels)
 		people_path_points.insert 0, { x: 0, y: @end_point_heights[:left] }
 		people_path_points << { x: @size[:w], y: @end_point_heights[:right] }
 		people_path_points = (args[:dir] == 1 ? people_path_points : (args[:dir] == -1 ? people_path_points.reverse : nil))
