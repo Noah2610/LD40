@@ -12,8 +12,6 @@ DIR = {
 }
 
 require 'gosu'
-require 'awesome_print'
-require 'byebug'
 require "#{DIR[:rb]}/Settings"
 require "#{DIR[:rb]}/Section"
 require "#{DIR[:rb]}/Camera"
