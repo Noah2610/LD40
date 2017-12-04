@@ -18,7 +18,7 @@ class Settings
 		return {
 			size:       { w: 512, h: 512 },
 			image_size: { w: 128, h: 128 },
-			count: 16
+			count: 32
 		}
 	end
 
