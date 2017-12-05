@@ -4,8 +4,7 @@ class Person
 	attr_accessor :group_id
 	def initialize args = {}
 		$can_win_or_lose = true
-		file = get_random_file("#{DIR[:people]}", "png")
-		@image = Gosu::Image.new file, retro: true
+		@image = $resources[:images][:people].to_a.sample[1]
 		@x = args[:x] || rand(Settings.sections[:size][:w] .. ($game.get_map_width - Settings.sections[:size][:w]))
 		@y = args[:y] || Settings.screen[:h] - 64
 		@direction = [
@@ -176,14 +175,16 @@ class Person
 	end
 
 	def die!
+		@in_tornado = false
+		@in_earthquake = false
 		# Play wilhelm scream
 		$game.samples[:wilhelm_scream].play(
 			rand(Settings.people[:scream][:vol_range]), rand(Settings.people[:scream][:speed_range])
 		)  if (rand(0.0 .. 1.0) < Settings.people[:scream][:chance])
-		$deaths += 1
-		@alive = false
 		# Grave texture
 		@image = $game.misc[:rip]
+		@alive = false
+		$deaths += 1
 	end
 
 	def update
@@ -195,20 +196,24 @@ class Person
 		end
 
 		if (@in_tornado || @in_earthquake)
-			if (@in_earthquake)
-				if ($update_counter % Settings.disasters[:earthquake][:interval] == 0)
-					@wobble_step = Settings.disasters[:earthquake][:shake].to_f * 1.5  unless (@wobble_step.abs == (Settings.disasters[:earthquake][:shake].to_f * 1.5))
-					@wobble_step *= -1
-					chance = Settings.disasters[:earthquake][:die_chance] * 100.0
-					die!  if (rand(0 .. 100) < chance)
-				end
-
-			elsif (@in_tornado)
+			if (@in_tornado)
 				@direction[:x] = [-1,1].sample           if (@direction[:x] == 0)
 				section = Section.find x: @x
 				move_tornado                             if ($update_counter % Settings.people[:move][:tornado_interval] == 0)
 				if (section != @tornado_section)
 					@direction[:x] = (@tornado_section.section_index - section.section_index).sign
+				end
+
+			elsif (@in_earthquake)
+				if ($update_counter % Settings.disasters[:earthquake][:interval] == 0)
+					@wobble_step = Settings.disasters[:earthquake][:shake].to_f * 1.5  unless (@wobble_step.abs == (Settings.disasters[:earthquake][:shake].to_f * 1.5))
+					@wobble_step *= -1
+					unless (@y > (Settings.screen[:h] - Settings.disasters[:earthquake][:h]))
+						chance = Settings.disasters[:earthquake][:die_chance] * 100.0
+						die!  if (rand(0 .. 100) < chance)
+					else
+						die!
+					end
 				end
 
 			end

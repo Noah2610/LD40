@@ -11,8 +11,10 @@ z-indexes:
 	person_rip:       175
 	buildings:        150
 	tornado_display:  20
+	tornado_font:     25
 	tornado_effect:   250
-	earthquake:       20
+	earthquake_bg:    20
+	earthquake_font:  25
 
 
 

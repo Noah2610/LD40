@@ -96,6 +96,7 @@ def get_random_file directory, extension = "png"
 end
 
 
+
 class Game < Gosu::Window
 	attr_reader :sections, :people, :groups, :bases, :samples, :misc
 	def initialize
@@ -104,6 +105,7 @@ class Game < Gosu::Window
 
 		@font = Gosu::Font.new 32
 		@final_font = Gosu::Font.new 128
+		@final_font_small = Gosu::Font.new 64
 
 		@sections = gen_sections load_sections(DIR[:sections])
 
@@ -363,17 +365,27 @@ class Game < Gosu::Window
 
 		# Draw win/lose text
 		if (@has_won)
-			@final_font.draw_rel "Congratulations!", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 - 48), 1000, 0.5,0.5, 1,1, 0xff_0000ff
-			@final_font.draw_rel "YOU HAVE WON", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 + 48), 1000, 0.5,0.5, 1,1, 0xff_00ff00
+			@final_font.draw_rel "Congratulations!", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 - 96), 1000, 0.5,0.5, 1,1, 0xff_0000ff
+			@final_font.draw_rel "YOU HAVE WON", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2), 1000, 0.5,0.5, 1,1, 0xff_00ff00
+			@final_font_small.draw_rel "Thank you for playing!", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 + 96), 1000, 0.5,0.5, 1,1, 0xff_00cccc
 		elsif (@has_lost)
-			@final_font.draw_rel "Oh No :(", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 - 48), 1000, 0.5,0.5, 1,1, 0xff_0000ff
-			@final_font.draw_rel "You have lost!", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 + 48), 1000, 0.5,0.5, 1,1, 0xff_ff0000
+			@final_font.draw_rel "Oh No :(", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 - 96), 1000, 0.5,0.5, 1,1, 0xff_0000ff
+			@final_font.draw_rel "You have lost!", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2), 1000, 0.5,0.5, 1,1, 0xff_ff4444
+			@final_font_small.draw_rel "Thank you for playing!", (Settings.screen[:w] / 2), (Settings.screen[:h] / 2 + 96), 1000, 0.5,0.5, 1,1, 0xff_00cccc
 		end
 	end
 end
 
 
 $camera = nil
+
+$resources = {
+	images: {
+		people:   load_misc(DIR[:people]),
+	},
+	tornado_font:    Gosu::Font.new(24),
+	earthquake_font: Gosu::Font.new(24)
+}
 $game = Game.new
 $game.show
 

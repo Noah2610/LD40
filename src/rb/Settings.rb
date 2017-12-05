@@ -130,13 +130,13 @@ class Settings
 			},
 
 			earthquake: {
-				h:                24,
+				h:                32,
 				shake:            8,
 				shake_interval:   6,
 				active_time:      4,
 				interval:         10,
 				die_chance:       (1.0 / 75.0),
-				timeout:          10
+				timeout:          1
 			}
 		}
 	end

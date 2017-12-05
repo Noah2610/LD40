@@ -9,6 +9,7 @@ class Tornado < Disaster
 		}
 
 		@display = {
+			font_color: Gosu::Color.argb(0xff_000000),
 			images: [
 				Gosu::Image.new("#{DIR[:disasters]}/tornado/display_zero.png"),
 				Gosu::Image.new("#{DIR[:disasters]}/tornado/display_one.png"),
@@ -116,6 +117,7 @@ class Tornado < Disaster
 		scale_x = Settings.disasters[:tornado][:display][:size][:w].to_f / Settings.disasters[:tornado][:display][:image_size][:w].to_f
 		scale_y = Settings.disasters[:tornado][:display][:size][:h].to_f / Settings.disasters[:tornado][:display][:image_size][:h].to_f
 		@display[:images][@display[:current]].draw @display[:x], @display[:y], 20, scale_x, scale_y
+		$resources[:tornado_font].draw_rel "TORNADO", (@display[:x] + (@trigger[:w] / 2)), (@trigger[:h] - 8), 25, 0.5,0, 1,1, @display[:font_color]
 
 		# Draw effect
 		if (@active)
