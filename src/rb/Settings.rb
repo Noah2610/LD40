@@ -123,7 +123,7 @@ class Settings
 					image_size: { w: 64, h: 64 }
 				},
 				wind_interval:    75,
-				wind_chance:      (1.0 / 5.0),
+				wind_chance:      (1.0 / 4.0),
 				active_time:      5,
 				effect_interval:  10,
 			},
@@ -135,7 +135,7 @@ class Settings
 				active_time:      4,
 				interval:         10,
 				die_chance:       (1.0 / 75.0),
-				timeout:          1
+				timeout:          6
 			}
 		}
 	end
