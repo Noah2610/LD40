@@ -8,7 +8,8 @@ class Earthquake < Disaster
 			w: Settings.sections[:size][:w],
 			h: Settings.disasters[:earthquake][:h]
 		}
-		@trigger_color = Gosu::Color.argb 0xff_cccccc
+		@trigger_bg = Gosu::Color.argb 0xff_999999
+		@trigger_fg = Gosu::Color.argb 0xff_000000
 		@activated_at = 0
 		@timeout = Time.now + (Settings.disasters[:earthquake][:timeout] * 2)
 	end
@@ -37,9 +38,12 @@ class Earthquake < Disaster
 	end
 
 	def draw
-		# Draw eathquake trigger section
+		# Draw earthquake trigger section
 		if (Time.now > @timeout)
-			Gosu.draw_rect (@trigger[:x] - $camera.pos), @trigger[:y], @trigger[:w], @trigger[:h], @trigger_color, 20
+			# Background
+			Gosu.draw_rect (@trigger[:x] - $camera.pos), @trigger[:y], @trigger[:w], @trigger[:h], @trigger_bg, 20
+			# Text
+			$resources[:earthquake_font].draw_rel "EARTHQUAKE", (@trigger[:x] + (@trigger[:w] / 2) - $camera.pos), @trigger[:y], 25, 0.5,-0.25, 1,1, @trigger_fg
 		end
 	end
 end

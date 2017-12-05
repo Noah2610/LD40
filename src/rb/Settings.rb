@@ -43,6 +43,13 @@ class Settings
 			initial_spawns_at: [10,20,30,40,50,60,70,80,90,100,120,140,160,180,200,240,280,320,360,400,500,600,700,800,900,1000],
 			size:              { w: 8, h: 12 },
 			image_size:        { w: 8, h: 12 },
+			rip_image_size:    { w: 32, h: 32 },
+			rip_size:          { w: 24, h: 24 },
+			scream: {
+				chance:        (1.0 / 100.0),
+				vol_range:     (0.2 ... 0.75),
+				speed_range:   (0.5 ... 1.25)
+			},
 			move: {
 				interval:             10,
 				tornado_interval:     1,
@@ -122,13 +129,13 @@ class Settings
 			},
 
 			earthquake: {
-				h:                24,
+				h:                32,
 				shake:            8,
 				shake_interval:   6,
 				active_time:      4,
 				interval:         10,
 				die_chance:       (1.0 / 75.0),
-				timeout:          10
+				timeout:          1
 			}
 		}
 	end
