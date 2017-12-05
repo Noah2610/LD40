@@ -176,9 +176,14 @@ class Person
 	end
 
 	def die!
+		# Play wilhelm scream
+		$game.samples[:wilhelm_scream].play(
+			rand(Settings.people[:scream][:vol_range]), rand(Settings.people[:scream][:speed_range])
+		)  if (rand(0.0 .. 1.0) < Settings.people[:scream][:chance])
 		$deaths += 1
 		@alive = false
-		@image = Gosu::Image.new "#{DIR[:misc]}/rip.png"
+		# Grave texture
+		@image = $game.misc[:rip]
 	end
 
 	def update
@@ -260,7 +265,9 @@ class Person
 			scale_y = Settings.people[:size][:h].to_f / Settings.people[:image_size][:h].to_f
 			@image.draw (@x - $camera.pos), (@y + @wobble_step), 200, scale_x, scale_y
 		elsif (!@alive)
-			@image.draw (@x - $camera.pos), @y, 175, 4,4
+			scale_x = Settings.people[:rip_size][:w].to_f / Settings.people[:rip_image_size][:w].to_f
+			scale_y = Settings.people[:rip_size][:h].to_f / Settings.people[:rip_image_size][:h].to_f
+			@image.draw (@x - $camera.pos), @y, 175, scale_x, scale_y
 		end
 	end
 end

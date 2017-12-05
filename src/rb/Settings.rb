@@ -44,6 +44,13 @@ class Settings
 			#initial_spawns_at: [50, 100],
 			size:              { w: 8, h: 12 },
 			image_size:        { w: 8, h: 12 },
+			rip_image_size:    { w: 32, h: 32 },
+			rip_size:          { w: 24, h: 24 },
+			scream: {
+				chance:        (1.0 / 100.0),
+				vol_range:     (0.2 ... 0.75),
+				speed_range:   (0.5 ... 1.25)
+			},
 			move: {
 				interval:             10,
 				tornado_interval:     1,

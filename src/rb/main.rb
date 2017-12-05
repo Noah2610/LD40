@@ -62,6 +62,28 @@ def load_sections directory
 	return ret
 end
 
+def load_samples directory
+	ret = {}
+	dir = Dir.new directory
+	dir.each do |file|
+		next  if (file == "." || file == "..")
+		ret[ file.gsub(/\..+\z/, "").to_sym ] = Gosu::Sample.new("./#{directory}/#{file}")  if (/.+\.wav\z/ =~ "#{directory}/#{file}")
+	end
+	return ret
+end
+
+def load_misc directory
+	ret = {}
+	dir = Dir.new directory
+	dir.each do |file|
+		next  if (file == "." || file == "..")
+		if (/.+\.png\z/ =~ "#{directory}/#{file}")  # check for pngs
+			ret[ file.gsub(/\..+\z/, "").to_sym ] = Gosu::Image.new("./#{directory}/#{file}", retro: true)
+		end
+	end
+	return ret
+end
+
 
 def get_random_file directory, extension = "png"
 	files = []
@@ -75,7 +97,7 @@ end
 
 
 class Game < Gosu::Window
-	attr_reader :sections, :people, :groups, :bases
+	attr_reader :sections, :people, :groups, :bases, :samples, :misc
 	def initialize
 		@has_lost = false
 		@has_won = false
@@ -84,6 +106,9 @@ class Game < Gosu::Window
 		@final_font = Gosu::Font.new 128
 
 		@sections = gen_sections load_sections(DIR[:sections])
+
+		@samples = load_samples DIR[:samples]
+		@misc = load_misc DIR[:misc]
 
 		$camera = Camera.new sections: @sections
 
