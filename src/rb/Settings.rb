@@ -66,7 +66,7 @@ class Settings
 					step:     2,
 					interval: 10
 				},
-				wander_distance: 2  # in sections
+				wander_distance: 4  # in sections
 			},
 			display: {
 				pos: {
