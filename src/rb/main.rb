@@ -162,6 +162,7 @@ class Game < Gosu::Window
 		# Add middle sections
 		section_counter = 0
 		while (ret.size < Settings.sections[:count] - 1)
+            sections = sections.shuffle
 			if (!gen_timeout.nil? && Time.now > gen_start + gen_timeout)
 				puts "SECTION GENERATION TIMEOUT, longer than 5 seconds"
 				break
@@ -169,7 +170,7 @@ class Game < Gosu::Window
 			section = sections[section_counter].dup
 			if (!section.is_border? && (prev_section.nil? || prev_section.can_have_neighbor?(section)))
 				ret << section.init
-				#section.set_index $section_index.dup
+				# section.set_index $section_index.dup
 				prev_section = section
 			end
 			section_counter += 1
